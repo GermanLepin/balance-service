@@ -9,10 +9,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func IdValidate(w http.ResponseWriter, r *http.Request, id_account string) (id int64) {
-	user_id := parseform.Pars(w, r, id_account)
+func IdValidate(w http.ResponseWriter, r *http.Request, idAccount string) (id int64) {
+	userId := parseform.Pars(w, r, idAccount)
 
-	id, err := strconv.ParseInt(user_id, 0, 64)
+	id, err := strconv.ParseInt(userId, 0, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.WithError(err).Errorf("Error with parcing id")

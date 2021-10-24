@@ -10,12 +10,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func AmountValidate(w http.ResponseWriter, r *http.Request, amount_s string) (correct_amount float64) {
-	amount_string := parseform.Pars(w, r, amount_s)
+func AmountValidate(w http.ResponseWriter, r *http.Request, amountS string) (correctAmount float64) {
+	amountString := parseform.Pars(w, r, amountS)
 
-	valid_amount := strings.Split(amount_string, ".")
-	if len(valid_amount) > 1 {
-		if len(valid_amount[1]) > 2 {
+	validAmount := strings.Split(amountString, ".")
+	if len(validAmount) > 1 {
+		if len(validAmount[1]) > 2 {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Errorf("The amount have more then 2 decimal places")
 			jsonenc.JSONError(w, "The amount have more then 2 decimal places")
@@ -23,7 +23,7 @@ func AmountValidate(w http.ResponseWriter, r *http.Request, amount_s string) (co
 		}
 	}
 
-	amount, err := strconv.ParseFloat(amount_string, 64)
+	amount, err := strconv.ParseFloat(amountString, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.WithError(err).Errorf("Error with parcing amount")

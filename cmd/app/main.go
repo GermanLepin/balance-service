@@ -27,6 +27,14 @@ func main() {
 		r.Delete("/delete-user", handlers.DeleteUser)
 	})
 
+	r.Route("/description", func(r chi.Router) {
+		r.Post("/add", handlers.AddDiscription)
+		r.Get("/get", handlers.AddDiscription)
+		r.Get("/get-all", handlers.AddDiscription)
+		r.Get("/get-sort", handlers.AddDiscription)
+		r.Get("/get-sort-desc", handlers.AddDiscription)
+	})
+
 	srv := &http.Server{
 		Addr:    ":9000",
 		Handler: r,

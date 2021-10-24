@@ -11,15 +11,15 @@ import (
 )
 
 var (
-	map_cur    map[string]json.RawMessage
-	val_cur    map[string]json.RawMessage
-	rates      = "rates"
-	access_key = "27c4039d0e33e2f74fbdc7afa63c08a8"
+	mapCur    map[string]json.RawMessage
+	valCur    map[string]json.RawMessage
+	rates     = "rates"
+	accessKey = "27c4039d0e33e2f74fbdc7afa63c08a8"
 )
 
 func GetConvertValue(w http.ResponseWriter, currency string) float64 {
 	client := http.Client{}
-	req, err := http.NewRequest("GET", fmt.Sprintf("http://api.exchangeratesapi.io/v1/latest?access_key=%s&symbols=%s", access_key, currency), nil)
+	req, err := http.NewRequest("GET", fmt.Sprintf("http://api.exchangeratesapi.io/v1/latest?access_key=%s&symbols=%s", accessKey, currency), nil)
 	if err != nil {
 		log.Errorf("Creating request error")
 		w.WriteHeader(http.StatusInternalServerError)
@@ -38,27 +38,27 @@ func GetConvertValue(w http.ResponseWriter, currency string) float64 {
 		w.WriteHeader(http.StatusInternalServerError)
 	}
 
-	if err := json.Unmarshal(body, &map_cur); err != nil {
+	if err := json.Unmarshal(body, &mapCur); err != nil {
 		log.Printf("Error parcing JSON")
 	}
 
-	map_currency := map_cur[rates]
+	mapCurrency := mapCur[rates]
 
-	if err := json.Unmarshal(map_currency, &val_cur); err != nil {
+	if err := json.Unmarshal(mapCurrency, &valCur); err != nil {
 		log.Printf("Error parcing JSON")
 	}
 
-	srting_value_cur := string(val_cur[currency][:])
+	srtingValueCur := string(valCur[currency][:])
 
-	value_currency, err := strconv.ParseFloat(srting_value_cur, 64)
+	valueCurrency, err := strconv.ParseFloat(srtingValueCur, 64)
 	if err != nil {
 		log.Printf("Error parcing Float")
 	}
-	return value_currency
+	return valueCurrency
 }
 
-func UsdAmount(usd_to_eur, rub, amount float64) float64 {
-	usd_to_rub := rub / usd_to_eur
-	usd_amount := amount / usd_to_rub
-	return usd_amount
+func UsdAmount(usdToEur, rub, amount float64) float64 {
+	usdToRub := rub / usdToEur
+	usdAmount := amount / usdToRub
+	return usdAmount
 }

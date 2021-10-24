@@ -5,35 +5,35 @@ import (
 	"net/http"
 )
 
-func JSONError(w http.ResponseWriter, error_str string) {
+func JSONError(w http.ResponseWriter, errorStr string) {
 	type JSONErr struct {
 		Error string `json:"error"`
 	}
 
-	error_json := JSONErr{
-		Error: error_str,
+	errorJson := JSONErr{
+		Error: errorStr,
 	}
 
 	encoder := json.NewEncoder(w)
-	err := encoder.Encode(&error_json)
+	err := encoder.Encode(&errorJson)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func JSONDeleteUser(w http.ResponseWriter, id int64, status string) {
-	type JSONErr struct {
+	type DeleteUser struct {
 		Id     int64  `json:"id"`
 		Status string `json:"status"`
 	}
 
-	error_json := JSONErr{
+	deleteUser := DeleteUser{
 		Id:     id,
 		Status: status,
 	}
 
 	encoder := json.NewEncoder(w)
-	err := encoder.Encode(&error_json)
+	err := encoder.Encode(&deleteUser)
 	if err != nil {
 		panic(err)
 	}
@@ -111,4 +111,31 @@ func JSONU2U(w http.ResponseWriter, id1, id2 int64, amount float64) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func JSONUAddDiscription(w http.ResponseWriter, id int64, balanceAtMoment, corectAmount float64, refill, description, senderReceiver string) {
+	type DiscriptionInformation struct {
+		Id              int64   `json:"user id"`
+		BalanceAtMoment float64 `json:"balance at moment"`
+		CorectAmount    float64 `json:"amount"`
+		Description     string  `json:"description of transaction"`
+		SenderReceiver  string  `json:"sender or receiver"`
+		Refill          string  `json:"refill the balance"`
+	}
+
+	upBalanceInfo := DiscriptionInformation{
+		Id:              id,
+		BalanceAtMoment: balanceAtMoment,
+		CorectAmount:    corectAmount,
+		Description:     description,
+		SenderReceiver:  senderReceiver,
+		Refill:          refill,
+	}
+
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(&upBalanceInfo)
+	if err != nil {
+		panic(err)
+	}
+
 }

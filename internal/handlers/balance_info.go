@@ -14,12 +14,12 @@ import (
 )
 
 var (
-	ctx       = context.Background()
-	currency  = "currency"
-	RUB       = "RUB"
-	USD       = "USD"
-	static    = 100.00
-	nil_value = ""
+	ctx      = context.Background()
+	currency = "currency"
+	RUB      = "RUB"
+	USD      = "USD"
+	static   = 100.00
+	nilValue = ""
 )
 
 func BalanceInfo(w http.ResponseWriter, r *http.Request) {
@@ -31,19 +31,19 @@ func BalanceInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, rub_balance := instance.BalanceInfoDB(ctx, w, id)
-	if user_id == 0 {
+	userId, rubBalance := instance.BalanceInfoDB(ctx, w, id)
+	if userId == 0 {
 		return
 	}
 
 	if currency == USD {
 		rub := convert.GetConvertValue(w, RUB)
-		usd_to_eur := convert.GetConvertValue(w, USD)
-		usd_amount := convert.UsdAmount(usd_to_eur, rub, rub_balance)
-		user_balance_usd := math.Floor(usd_amount*static) / static
-		jsonenc.JSONEncoder(w, id, user_balance_usd)
+		usdToEur := convert.GetConvertValue(w, USD)
+		usdAmount := convert.UsdAmount(usdToEur, rub, rubBalance)
+		userBalanceUsd := math.Floor(usdAmount*static) / static
+		jsonenc.JSONEncoder(w, id, userBalanceUsd)
 	} else if currency == RUB || currency == "" {
-		jsonenc.JSONEncoder(w, id, rub_balance)
+		jsonenc.JSONEncoder(w, id, rubBalance)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		jsonenc.JSONError(w, "Invalid currency type, only RUB or USD")

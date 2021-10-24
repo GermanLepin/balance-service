@@ -22,8 +22,8 @@ func WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user_id, balance := instance.BalanceInfoDB(ctx, w, id)
-	if user_id == 0 {
+	userId, balance := instance.BalanceInfoDB(ctx, w, id)
+	if userId == 0 {
 		return
 	}
 

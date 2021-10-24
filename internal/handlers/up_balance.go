@@ -20,7 +20,7 @@ func UpBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	corectAmount := validate.AmountValidate(w, r, "amount")
+	corectAmount := validate.AmountValidate(w, r, amount)
 	if corectAmount < 0.01 {
 		return
 	}

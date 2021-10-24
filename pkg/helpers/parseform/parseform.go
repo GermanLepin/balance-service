@@ -7,8 +7,8 @@ import (
 
 func Pars(w http.ResponseWriter, r *http.Request, value string) (correctVal string) {
 	r.ParseForm()
-	params_request := r.Form
-	valie_slice := params_request[value]
-	correctValue := strings.Join(valie_slice, " ")
+	paramsRequest := r.Form
+	valueSlice := paramsRequest[value]
+	correctValue := strings.Join(valueSlice, " ")
 	return correctValue
 }
