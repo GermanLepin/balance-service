@@ -28,11 +28,13 @@ func main() {
 	})
 
 	r.Route("/description", func(r chi.Router) {
-		r.Post("/add", handlers.AddDiscription)
-		r.Get("/get", handlers.AddDiscription)
-		r.Get("/get-all", handlers.AddDiscription)
-		r.Get("/get-sort", handlers.AddDiscription)
-		r.Get("/get-sort-desc", handlers.AddDiscription)
+		r.Post("/add", handlers.AddDescription)
+		r.Get("/get-user", handlers.GetUserId)
+		r.Get("/get-user/sort", handlers.GetUserIdSort)
+		r.Get("/get-user/sort_by", handlers.GetUserIdSortDesc)
+		r.Get("/get-all", handlers.GetAllUsers)
+		r.Get("/get-all/sort", handlers.GetAllUsersSort)
+		r.Get("/get-all/sort_by", handlers.GetAllUsersSortDesc)
 	})
 
 	srv := &http.Server{

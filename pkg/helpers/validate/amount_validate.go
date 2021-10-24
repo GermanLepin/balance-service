@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-	"tech_task/pkg/helpers/jsonenc.go"
+	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
 
 	log "github.com/sirupsen/logrus"

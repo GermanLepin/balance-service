@@ -2,16 +2,13 @@ package handlers
 
 import (
 	"net/http"
-	"tech_task/pkg/helpers/jsonenc.go"
-	"tech_task/pkg/helpers/pg"
+	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func WritingOff(w http.ResponseWriter, r *http.Request) {
-	instance := pg.StartDB()
-
 	id := validate.IdValidate(w, r, id)
 	if id < 1 {
 		return

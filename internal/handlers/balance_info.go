@@ -5,9 +5,8 @@ import (
 	"math"
 	"net/http"
 	"tech_task/pkg/helpers/convert"
-	"tech_task/pkg/helpers/jsonenc.go"
+	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
-	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
@@ -23,7 +22,6 @@ var (
 )
 
 func BalanceInfo(w http.ResponseWriter, r *http.Request) {
-	instance := pg.StartDB()
 	currency := parseform.Pars(w, r, currency)
 
 	id := validate.IdValidate(w, r, id)
@@ -41,9 +39,9 @@ func BalanceInfo(w http.ResponseWriter, r *http.Request) {
 		usdToEur := convert.GetConvertValue(w, USD)
 		usdAmount := convert.UsdAmount(usdToEur, rub, rubBalance)
 		userBalanceUsd := math.Floor(usdAmount*static) / static
-		jsonenc.JSONEncoder(w, id, userBalanceUsd)
-	} else if currency == RUB || currency == "" {
-		jsonenc.JSONEncoder(w, id, rubBalance)
+		jsonenc.JSONBalanceInfo(w, id, userBalanceUsd)
+	} else if currency == RUB || currency == nilValue {
+		jsonenc.JSONBalanceInfo(w, id, rubBalance)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		jsonenc.JSONError(w, "Invalid currency type, only RUB or USD")

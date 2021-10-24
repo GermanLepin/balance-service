@@ -2,9 +2,8 @@ package handlers
 
 import (
 	"net/http"
-	"tech_task/pkg/helpers/jsonenc.go"
+	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
-	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
@@ -18,11 +17,16 @@ var (
 	TRUE           = "T"
 )
 
-func AddDiscription(w http.ResponseWriter, r *http.Request) {
-	instance := pg.StartDB()
+func AddDescription(w http.ResponseWriter, r *http.Request) {
 	description := parseform.Pars(w, r, description)
 	senderReceiver := parseform.Pars(w, r, senderReceiver)
 	refill := parseform.Pars(w, r, refill)
+	if refill == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Refill is not null field")
+		jsonenc.JSONError(w, "Refill is not null field")
+		return
+	}
 
 	id := validate.IdValidate(w, r, id)
 	if id < 1 {
@@ -45,8 +49,8 @@ func AddDiscription(w http.ResponseWriter, r *http.Request) {
 
 		if corectAmount > balance {
 			w.WriteHeader(http.StatusBadRequest)
-			log.Errorf("insufficient funds")
-			jsonenc.JSONError(w, "insufficient funds")
+			log.Errorf("Insufficient funds")
+			jsonenc.JSONError(w, "Insufficient funds")
 			return
 		}
 
@@ -55,6 +59,6 @@ func AddDiscription(w http.ResponseWriter, r *http.Request) {
 
 	_, balanceAtMoment := instance.BalanceInfoDB(ctx, w, id)
 
-	instance.AddDiscriptionDB(ctx, w, id, balanceAtMoment, corectAmount, refill, description, senderReceiver)
-	jsonenc.JSONUAddDiscription(w, id, balanceAtMoment, corectAmount, refill, description, senderReceiver)
+	instance.AddDescriptionDB(ctx, w, id, balanceAtMoment, corectAmount, refill, description, senderReceiver)
+	jsonenc.JSONUAddDescription(w, id, balanceAtMoment, corectAmount, refill, description, senderReceiver)
 }

@@ -1,17 +1,19 @@
 package entities
 
+import "time"
+
 type User struct {
 	Id      int64
 	Balance float64
 }
 
-type InfoOperation struct {
+type Description struct {
 	Id              int64
-	CreatedAt       int64
-	Discription     string
 	SenderReceiver  string
-	BalanceAtMoment string
-	Amount          int64
-	Refil           string
+	Amount          float64
+	Description     string
+	BalanceAtMoment float64
 	UserId          int64
+	CreatedAt       time.Time
+	Refil           string
 }
