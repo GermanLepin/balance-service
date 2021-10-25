@@ -6,11 +6,6 @@ import (
 	"tech_task/pkg/helpers/validate"
 )
 
-var (
-	id     = "id"
-	amount = "amount"
-)
-
 func UpBalance(w http.ResponseWriter, r *http.Request) {
 	id := validate.IdValidate(w, r, id)
 	if id < 1 {

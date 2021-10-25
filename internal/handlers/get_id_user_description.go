@@ -10,11 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var (
-	sortBy     = "by"
-	sortByDesc = "desc"
-	data       = "created_at"
-)
+
 
 func GetUserId(w http.ResponseWriter, r *http.Request) {
 	instance := pg.StartDB()
@@ -87,7 +83,7 @@ func GetUserIdSortDesc(w http.ResponseWriter, r *http.Request) {
 
 	switch sortByDesc {
 	case data:
-		descriptionSlice := instance.GetUserIdSortDB(ctx, w, userId, data)
+		descriptionSlice := instance.GetUserIdSortDescDB(ctx, w, userId, data)
 		if descriptionSlice == nil {
 			return
 		}
@@ -97,7 +93,7 @@ func GetUserIdSortDesc(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case amount:
-		descriptionSlice := instance.GetUserIdSortDB(ctx, w, userId, amount)
+		descriptionSlice := instance.GetUserIdSortDescDB(ctx, w, userId, amount)
 		if descriptionSlice == nil {
 			return
 		}
