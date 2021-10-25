@@ -22,9 +22,9 @@ func main() {
 	r.Route("/", func(r chi.Router) {
 		r.Post("/up-balance", handlers.UpBalance)
 		r.Get("/balance-info", handlers.BalanceInfo)
+		r.Get("/balance-info/convert", handlers.BalanceInfoConvert)
 		r.Patch("/writing-off", handlers.WritingOff)
 		r.Patch("/user-to-user", handlers.U2U)
-		r.Delete("/delete-user", handlers.DeleteUser)
 	})
 
 	r.Route("/description", func(r chi.Router) {

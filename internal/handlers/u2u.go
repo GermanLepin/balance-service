@@ -8,10 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var (
-	id1 = "id1"
-	id2 = "id2"
-)
+
 
 func U2U(w http.ResponseWriter, r *http.Request) {
 	id1 := validate.IdValidate(w, r, id1)

@@ -4,13 +4,8 @@ import (
 	"net/http"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
-	"tech_task/pkg/helpers/pg"
 
 	log "github.com/sirupsen/logrus"
-)
-
-var (
-	instance = pg.StartDB()
 )
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {

@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
+	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
@@ -15,6 +17,20 @@ var (
 	refill         = "refill"
 	FALSE          = "F"
 	TRUE           = "T"
+	ctx            = context.Background()
+	currency       = "currency"
+	RUB            = "RUB"
+	USD            = "USD"
+	static         = 100.00
+	nilValue       = ""
+	instance       = pg.StartDB()
+	sortBy         = "by"
+	sortByDesc     = "desc"
+	data           = "created_at"
+	id             = "id"
+	id1            = "id1"
+	id2            = "id2"
+	amount         = "amount"
 )
 
 func AddDescription(w http.ResponseWriter, r *http.Request) {
