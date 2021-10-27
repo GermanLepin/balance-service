@@ -20,7 +20,15 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
-	sortBy := parseform.Pars(w, r, sortBy)
+	mapUser := parseform.ParsJSON(w, r)
+	sortBy := string(mapUser[sort_by])
+	if sortByDesc == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Sort value passed")
+		jsonenc.JSONError(w, "Sort value passed")
+		return
+	}
+
 	if sortBy != amount && sortBy != data && sortBy != nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("Incorrect parameter for sorting, can only be created_at or amount")
@@ -52,15 +60,23 @@ func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllUsersSortDesc(w http.ResponseWriter, r *http.Request) {
-	sortByDesc := parseform.Pars(w, r, sortByDesc)
-	if sortByDesc != amount && sortByDesc != data && sortByDesc != nilValue {
+	mapUser := parseform.ParsJSON(w, r)
+	sortBy := string(mapUser[sort_by])
+	if sortByDesc == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Sort value passed")
+		jsonenc.JSONError(w, "Sort value passed")
+		return
+	}
+
+	if sortBy != amount && sortBy != data && sortBy != nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("Incorrect parameter for sorting, can only be created_at or amount")
 		jsonenc.JSONError(w, "Incorrect parameter for sorting, can only be created_at or amount")
 		return
 	}
 
-	switch sortByDesc {
+	switch sortBy {
 	case data:
 		descriptionSlice := instance.GetAllUsersSortDescDB(ctx, w, data)
 		if descriptionSlice == nil {

@@ -22,7 +22,6 @@ func main() {
 	r.Route("/", func(r chi.Router) {
 		r.Post("/up-balance", handlers.UpBalance)
 		r.Get("/balance-info", handlers.BalanceInfo)
-		r.Get("/balance-info/convert", handlers.BalanceInfoConvert)
 		r.Patch("/writing-off", handlers.WritingOff)
 		r.Patch("/user-to-user", handlers.U2U)
 	})
@@ -30,11 +29,11 @@ func main() {
 	r.Route("/description", func(r chi.Router) {
 		r.Post("/add", handlers.AddDescription)
 		r.Get("/get-user", handlers.GetUserId)
-		r.Get("/get-user/sort", handlers.GetUserIdSort)
-		r.Get("/get-user/sort_by", handlers.GetUserIdSortDesc)
+		r.Get("/get-user/sort_by", handlers.GetUserIdSort)
+		r.Get("/get-user/sort_by/desc", handlers.GetUserIdSortDesc)
 		r.Get("/get-all", handlers.GetAllUsers)
-		r.Get("/get-all/sort", handlers.GetAllUsersSort)
-		r.Get("/get-all/sort_by", handlers.GetAllUsersSortDesc)
+		r.Get("/get-all/sort_by", handlers.GetAllUsersSort)
+		r.Get("/get-all/sort_by/desc", handlers.GetAllUsersSortDesc)
 	})
 
 	srv := &http.Server{
