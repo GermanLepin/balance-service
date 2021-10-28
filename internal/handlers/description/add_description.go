@@ -1,4 +1,4 @@
-package handlers
+package description
 
 import (
 	"context"
@@ -17,16 +17,12 @@ var (
 	refill         = "refill"
 	FALSE          = "F"
 	TRUE           = "T"
-	currency       = "currency"
 	RUB            = "RUB"
 	USD            = "USD"
-	static         = 100.00
 	nilValue       = ""
 	sortByDesc     = "sort_by_desc"
 	data           = "created_at"
 	id             = "id"
-	id1            = "id1"
-	id2            = "id2"
 	amount         = "amount"
 	sort_by        = "sort_by"
 	ctx            = context.Background()

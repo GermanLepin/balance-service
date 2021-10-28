@@ -1,14 +1,29 @@
-package handlers
+package balance
 
 import (
+	"context"
 	"math"
 	"net/http"
 	"tech_task/pkg/helpers/convert"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
+	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	FALSE    = "F"
+	TRUE     = "T"
+	currency = "currency"
+	RUB      = "RUB"
+	USD      = "USD"
+	static   = 100.00
+	nilValue = ""
+	id       = "id"
+	ctx      = context.Background()
+	instance = pg.StartDB()
 )
 
 func BalanceInfo(w http.ResponseWriter, r *http.Request) {

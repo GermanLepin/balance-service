@@ -1,12 +1,26 @@
-package handlers
+package u2u
 
 import (
+	"context"
 	"net/http"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
+	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	FALSE    = "F"
+	TRUE     = "T"
+	RUB      = "RUB"
+	USD      = "USD"
+	id1      = "id1"
+	id2      = "id2"
+	amount   = "amount"
+	ctx      = context.Background()
+	instance = pg.StartDB()
 )
 
 func U2U(w http.ResponseWriter, r *http.Request) {
