@@ -4,18 +4,15 @@ import (
 	"net/http"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
-	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
 )
 
-
-
 func GetUserId(w http.ResponseWriter, r *http.Request) {
-	instance := pg.StartDB()
-
-	userId := validate.IdValidate(w, r, id)
+	mapUser := parseform.ParsJSON(w, r)
+	userIdString := string(mapUser[id])
+	userId := validate.IdValidate(w, r, userIdString)
 	if userId < 1 {
 		return
 	}
@@ -31,16 +28,25 @@ func GetUserId(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
-	sortBy := parseform.Pars(w, r, sortBy)
+	mapUser := parseform.ParsJSON(w, r)
+	userIdString := string(mapUser[id])
+	userId := validate.IdValidate(w, r, userIdString)
+	if userId < 1 {
+		return
+	}
+
+	sortBy := string(mapUser[sort_by])
+	if sortBy == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Sort value passed")
+		jsonenc.JSONError(w, "Sort value passed")
+		return
+	}
+
 	if sortBy != amount && sortBy != data && sortBy != nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("Incorrect parameter for sorting, can only be created_at or amount")
 		jsonenc.JSONError(w, "Incorrect parameter for sorting, can only be created_at or amount")
-		return
-	}
-
-	userId := validate.IdValidate(w, r, id)
-	if userId < 1 {
 		return
 	}
 
@@ -68,16 +74,25 @@ func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserIdSortDesc(w http.ResponseWriter, r *http.Request) {
-	sortByDesc := parseform.Pars(w, r, sortByDesc)
-	if sortByDesc != amount && sortByDesc != data && sortByDesc != nilValue {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Errorf("Incorrect parameter for sorting, can only be created_at or amount")
-		jsonenc.JSONError(w, "Incorrect parameter for sorting, can only be created_at or amount")
+	mapUser := parseform.ParsJSON(w, r)
+	userIdString := string(mapUser[id])
+	userId := validate.IdValidate(w, r, userIdString)
+	if userId < 1 {
 		return
 	}
 
-	userId := validate.IdValidate(w, r, id)
-	if userId < 1 {
+	sortBy := string(mapUser[sort_by])
+	if sortByDesc == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Sort value passed")
+		jsonenc.JSONError(w, "Sort value passed")
+		return
+	}
+
+	if sortBy != amount && sortBy != data && sortBy != nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Incorrect parameter for sorting, can only be created_at or amount")
+		jsonenc.JSONError(w, "Incorrect parameter for sorting, can only be created_at or amount")
 		return
 	}
 

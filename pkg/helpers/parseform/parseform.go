@@ -1,11 +1,15 @@
 package parseform
 
 import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
 	"net/http"
 	"strings"
-	"tech_task/pkg/helpers/jsonenc"
+)
 
-	log "github.com/sirupsen/logrus"
+var (
+	mapUser map[string]string
 )
 
 func Pars(w http.ResponseWriter, r *http.Request, value string) (correctVal string) {
@@ -13,11 +17,18 @@ func Pars(w http.ResponseWriter, r *http.Request, value string) (correctVal stri
 	paramsRequest := r.Form
 	valueSlice := paramsRequest[value]
 	correctValue := strings.Join(valueSlice, " ")
-	if len(correctValue) < 1 {
-		w.WriteHeader(http.StatusBadRequest)
-		log.Errorf("Errors parameters were not passed")
-		jsonenc.JSONError(w, "Errors parameters were not passed")
-		return
-	}
 	return correctValue
+}
+
+func ParsJSON(w http.ResponseWriter, r *http.Request) map[string]string {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Printf("Error parcing request")
+	}
+
+	if err := json.Unmarshal(body, &mapUser); err != nil {
+		log.Printf("Error parcing JSON")
+	}
+
+	return mapUser
 }
