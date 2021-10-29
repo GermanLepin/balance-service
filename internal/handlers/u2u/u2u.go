@@ -24,7 +24,7 @@ var (
 )
 
 func U2U(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	userIdString1 := string(mapUser[id1])
 	userIdString2 := string(mapUser[id2])
 	amountString := string(mapUser[amount])

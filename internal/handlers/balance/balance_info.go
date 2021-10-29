@@ -27,7 +27,7 @@ var (
 )
 
 func BalanceInfo(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	currency := parseform.Pars(w, r, currency)
 

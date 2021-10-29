@@ -10,7 +10,7 @@ import (
 )
 
 func GetUserId(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	userId := validate.IdValidate(w, r, userIdString)
 	if userId < 1 {
@@ -28,7 +28,7 @@ func GetUserId(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	userId := validate.IdValidate(w, r, userIdString)
 	if userId < 1 {
@@ -74,7 +74,7 @@ func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserIdSortDesc(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	userId := validate.IdValidate(w, r, userIdString)
 	if userId < 1 {

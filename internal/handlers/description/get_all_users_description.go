@@ -20,7 +20,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	sortBy := string(mapUser[sort_by])
 	if sortByDesc == nilValue {
 		w.WriteHeader(http.StatusBadRequest)
@@ -60,7 +60,7 @@ func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetAllUsersSortDesc(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	sortBy := string(mapUser[sort_by])
 	if sortByDesc == nilValue {
 		w.WriteHeader(http.StatusBadRequest)

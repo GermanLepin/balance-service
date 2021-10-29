@@ -30,7 +30,7 @@ var (
 )
 
 func AddDescription(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	refill := string(mapUser[refill])
 	if refill == nilValue {
 		w.WriteHeader(http.StatusBadRequest)

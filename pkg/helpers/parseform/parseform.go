@@ -20,7 +20,7 @@ func Pars(w http.ResponseWriter, r *http.Request, value string) (correctVal stri
 	return correctValue
 }
 
-func ParsJSON(w http.ResponseWriter, r *http.Request) map[string]string {
+func ParsJSON(r *http.Request) map[string]string {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Printf("Error parcing request")

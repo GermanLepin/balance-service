@@ -21,7 +21,7 @@ var (
 )
 
 func UpBalance(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	amountString := string(mapUser[amount])
 
