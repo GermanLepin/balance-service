@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+func GetAllUsers(w http.ResponseWriter) {
 	descriptionSlice := instance.GetAllUsersDB(ctx, w)
 	if descriptionSlice == nil {
 		return
@@ -21,7 +21,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 
 func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
-	sortBy := string(mapUser[sort_by])
+	sortBy := string(mapUser[sortBy])
 	if sortByDesc == nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("Sort value passed")
@@ -61,7 +61,7 @@ func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
 
 func GetAllUsersSortDesc(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
-	sortBy := string(mapUser[sort_by])
+	sortBy := string(mapUser[sortBy])
 	if sortByDesc == nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("Sort value passed")

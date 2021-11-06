@@ -12,7 +12,7 @@ import (
 func GetUserId(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
-	userId := validate.IdValidate(w, r, userIdString)
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
 		return
 	}
@@ -30,12 +30,12 @@ func GetUserId(w http.ResponseWriter, r *http.Request) {
 func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
-	userId := validate.IdValidate(w, r, userIdString)
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
 		return
 	}
 
-	sortBy := string(mapUser[sort_by])
+	sortBy := string(mapUser[sortBy])
 	if sortBy == nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("Sort value passed")
@@ -76,12 +76,12 @@ func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
 func GetUserIdSortDesc(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
-	userId := validate.IdValidate(w, r, userIdString)
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
 		return
 	}
 
-	sortBy := string(mapUser[sort_by])
+	sortBy := string(mapUser[sortBy])
 	if sortByDesc == nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("Sort value passed")

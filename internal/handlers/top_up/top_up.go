@@ -10,10 +10,6 @@ import (
 )
 
 var (
-	FALSE    = "F"
-	TRUE     = "T"
-	RUB      = "RUB"
-	USD      = "USD"
 	id       = "id"
 	amount   = "amount"
 	ctx      = context.Background()
@@ -25,16 +21,16 @@ func UpBalance(w http.ResponseWriter, r *http.Request) {
 	userIdString := string(mapUser[id])
 	amountString := string(mapUser[amount])
 
-	userId := validate.IdValidate(w, r, userIdString)
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
 		return
 	}
 
-	corectAmount := validate.AmountValidate(w, r, amountString)
-	if corectAmount < 0.01 {
+	correctAmount := validate.AmountValidate(w, amountString)
+	if correctAmount < 0.01 {
 		return
 	}
 
-	instance.UpBalanceDB(ctx, w, userId, corectAmount)
-	jsonenc.JSONUpBalance(w, userId, corectAmount)
+	instance.UpBalanceDB(ctx, userId, correctAmount)
+	jsonenc.JSONUpBalance(w, userId, correctAmount)
 }

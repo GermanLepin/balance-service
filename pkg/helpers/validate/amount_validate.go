@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func AmountValidate(w http.ResponseWriter, r *http.Request, amountS string) (correctAmount float64) {
+func AmountValidate(w http.ResponseWriter, amountS string) (correctAmount float64) {
 	validAmount := strings.Split(amountS, ".")
 	if len(validAmount) > 1 {
 		if len(validAmount[1]) > 2 {

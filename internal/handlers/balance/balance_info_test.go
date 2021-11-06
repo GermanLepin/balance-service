@@ -2,44 +2,95 @@ package balance
 
 import (
 	"bytes"
+	"fmt"
+
+	"github.com/stretchr/testify/mock"
+
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
+type mockRepository struct {
+	mock.Mock
+}
+
+type mockUser struct {
+	Id      int64
+	Balance float64
+}
+
+
+var mUser = mockUser{ 1,1059.55 }
+
 func TestBalanceInfo(t *testing.T) {
-	JSONparams := bytes.NewBuffer([]byte(
-		`{
-			"id":"1"
-			}`))
+	t.Run("good user_id", func(t *testing.T) {
+		//JSONParams := bytes.NewBuffer([]byte(
+		//	`{
+		//	"id":"1"
+		//	}`))
 
-	req, err := http.NewRequest("GET", "localhost:9000/balance-info", JSONparams)
-	if err != nil {
-		t.Fatal(err)
-	}
+		//w := httptest.NewRecorder()
+		//req, err := http.NewRequest("GET", "localhost:9000/balance-info", JSONParams)
+		//if err != nil {
+		//	t.Fatal(err)
+		//}
 
-	r := httptest.NewRecorder()
-	handler := http.HandlerFunc(BalanceInfo)
-	handler.ServeHTTP(r, req)
+		//req = req.WithContext(ctx)
+		//repo := new(mockRepository)
+		//repo.On("BalanceInfo", 1,1059.55).Return(mUser.Balance, nil)
+		//res := w.Result()
+		//defer res.Body.Close()
+		//x, err := io.ReadAll(res.Body)
+		//fmt.Println(repo)
+		//fmt.Println(x)
+		fmt.Println("rrr")
 
-	if status := r.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
-	}
 
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		t.Fatal(err)
-	}
+	})
 
-	result := string(body)
-	expected := "{\"user id\":1,\"top up an amount\":1059.55}\n"
 
-	if result != expected {
-		t.Errorf("handler body: got %v want %s",
-			result, expected)
-	}
+
+	//
+	//
+	//r := httptest.NewRecorder()
+	//handler := http.HandlerFunc(BalanceInfo)
+	//handler.ServeHTTP(r, req)
+	//
+	//if status := r.Code; status != http.StatusOK {
+	//	t.Errorf("handler returned wrong status code: got %v want %v",
+	//		status, http.StatusOK)
+	//}
+	//
+	//body, err := ioutil.ReadAll(r.Body)
+	//if err != nil {
+	//	t.Fatal(err)
+	//}
+	//
+	//result := string(body)
+	//expected := "{\"user id\":1,\"top up an amount\":1059.55}\n"
+	//
+	//repo.On("BalanceInfo", 1,1059.55).Return(mUser.mockUser, nil)
+	//
+	////service := HttpService{
+	////	UserService: repo,
+	////}
+	////service.GetReceivers(w, r)
+	//res := w.Result()
+	//defer res.Body.Close()
+	//str, err := io.ReadAll(res.Body)
+	//require.Nil(t, err)
+	//var resBody mockReceivers
+	//err = json.Unmarshal(str, &resBody)
+	//require.Nil(t, err)
+	//require.Equal(t, http.StatusOK, w.Result().StatusCode)
+	//require.Equal(t, mUser.Receivers, resBody.Receivers)
+	//
+	//if result != expected {
+	//	t.Errorf("handler body: got %v want %s",
+	//		result, expected)
+	//}
 }
 
 func TestUpBalanceErrorUserId(t *testing.T) {

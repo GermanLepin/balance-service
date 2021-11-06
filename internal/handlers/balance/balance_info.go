@@ -14,8 +14,6 @@ import (
 )
 
 var (
-	FALSE    = "F"
-	TRUE     = "T"
 	currency = "currency"
 	RUB      = "RUB"
 	USD      = "USD"
@@ -29,9 +27,9 @@ var (
 func BalanceInfo(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
-	currency := parseform.Pars(w, r, currency)
+	currency := parseform.Pars(r, currency)
 
-	userId := validate.IdValidate(w, r, userIdString)
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
 		return
 	}
