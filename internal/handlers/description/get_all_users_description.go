@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetAllUsers(w http.ResponseWriter) {
+func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	descriptionSlice := instance.GetAllUsersDB(ctx, w)
 	if descriptionSlice == nil {
 		return

@@ -1,5 +1,5 @@
 create_database:
-	@docker-compose exec pgdb psql -U postgres -c 'CREATE DATABASE avito_users_db'
+	@docker-compose exec pgdb psql -U postgres -c 'CREATE DATABASE avito_users_db;'
 	
 create-users-table:
 	@docker-compose exec pgdb psql  avito_users_db -U postgres  -c 'CREATE TABLE users (id INTEGER NOT NULL PRIMARY KEY, balance NUMERIC(10,2));'
