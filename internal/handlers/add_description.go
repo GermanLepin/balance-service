@@ -1,4 +1,4 @@
-package description
+package handlers
 
 import (
 	"context"
@@ -22,7 +22,7 @@ var (
 	data           = "created_at"
 	id             = "id"
 	amount         = "amount"
-	sortBy        = "sort_by"
+	sortBy         = "sort_by"
 	ctx            = context.Background()
 	instance       = pg.StartDB()
 )

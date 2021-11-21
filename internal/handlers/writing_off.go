@@ -1,21 +1,12 @@
-package writingOff
+package handlers
 
 import (
-	"context"
 	"net/http"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
-	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
-)
-
-var (
-	id       = "id"
-	amount   = "amount"
-	ctx      = context.Background()
-	instance = pg.StartDB()
 )
 
 func WritingOff(w http.ResponseWriter, r *http.Request) {

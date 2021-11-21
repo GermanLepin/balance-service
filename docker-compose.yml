@@ -1,10 +1,26 @@
-version: '3'
+version: "3.8"
+
 services:
- pgdb:
-   image: "postgres:11"
-   container_name: "techtaskdb"
+  avito-tech:
+    image: avito-tech-image
+    container_name: avito-tech
+    build: .
+    environment:
+      POSTGRES_HOST: host.docker.internal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: avito_users_db
+    ports:
+      - "9000:9000"
+    depends_on:
+      - pgdb
+
+  pgdb:
+   image: postgres:11
+   container_name: avito-tech-postgre
    environment:
-     - POSTGRES_USER=postgres
-     - POSTGRES_PASSWORD=1234
+     POSTGRES_USER: postgres
+     POSTGRES_PASSWORD: 1234
+     POSTGRES_DB: avito_users_db
    ports:
      - "54320:5432"

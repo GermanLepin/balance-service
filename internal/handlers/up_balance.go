@@ -1,19 +1,10 @@
-package topUp
+package handlers
 
 import (
-	"context"
 	"net/http"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
-	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
-)
-
-var (
-	id       = "id"
-	amount   = "amount"
-	ctx      = context.Background()
-	instance = pg.StartDB()
 )
 
 func UpBalance(w http.ResponseWriter, r *http.Request) {

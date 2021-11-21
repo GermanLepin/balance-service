@@ -1,13 +1,11 @@
-package balance
+package handlers
 
 import (
-	"context"
 	"math"
 	"net/http"
 	"tech_task/pkg/helpers/convert"
 	"tech_task/pkg/helpers/jsonenc"
 	"tech_task/pkg/helpers/parseform"
-	"tech_task/pkg/helpers/pg"
 	"tech_task/pkg/helpers/validate"
 
 	log "github.com/sirupsen/logrus"
@@ -18,10 +16,6 @@ var (
 	RUB      = "RUB"
 	USD      = "USD"
 	static   = 100.00
-	nilValue = ""
-	id       = "id"
-	ctx      = context.Background()
-	instance = pg.StartDB()
 )
 
 func BalanceInfo(w http.ResponseWriter, r *http.Request) {
@@ -31,6 +25,9 @@ func BalanceInfo(w http.ResponseWriter, r *http.Request) {
 
 	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Incorrect value id user")
+		jsonenc.JSONError(w, "Incorrect value id user")
 		return
 	}
 

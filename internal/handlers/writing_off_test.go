@@ -1,10 +1,11 @@
-package writingOff
+package handlers_test
 
 import (
 	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"tech_task/internal/handlers"
 	"testing"
 )
 
@@ -17,7 +18,7 @@ func TestWritingOff(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
 	r := httptest.NewRecorder()
-	WritingOff(r, req)
+	handlers.WritingOff(r, req)
 
 	if status := r.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
@@ -47,7 +48,7 @@ func TestWritingOffErrorUserId(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
 	r := httptest.NewRecorder()
-	WritingOff(r, req)
+	handlers.WritingOff(r, req)
 
 	if status := r.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
@@ -77,7 +78,7 @@ func TestWritingOffErrorAmount(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
 	r := httptest.NewRecorder()
-	WritingOff(r, req)
+	handlers.WritingOff(r, req)
 
 	if status := r.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
@@ -107,7 +108,7 @@ func TestWritingOffErrorFindUserIdDB(t *testing.T) {
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
 	r := httptest.NewRecorder()
-	WritingOff(r, req)
+	handlers.WritingOff(r, req)
 
 	if status := r.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",

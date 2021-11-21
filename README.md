@@ -14,6 +14,7 @@
 
 Стартуем docker-compose.yaml: 
 
+    docker compose build
     docker-compose up -d 
 
 Используя makefile создайте базу данных и две таблицы

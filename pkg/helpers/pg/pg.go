@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-
 	"tech_task/internal/godb"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 )
 
+//Структура конфига, которая включает в себя необходимые нам настройки соединения (сюда можно добавить любые другие поля для postgres типа ssl и т.д.)
 type Config struct {
 	Host     string
 	Port     string
@@ -49,11 +49,32 @@ func NewConnection(poolConfig *pgxpool.Config) (*pgxpool.Pool, error) {
 
 func StartDB() *godb.Instance {
 	cfg := &Config{}
-	cfg.Host = "localhost"
-	cfg.Username = "postgres"
-	cfg.Password = "1234"
+
+	if len(os.Getenv("POSTGRES_HOST")) == 0 {
+		cfg.Host = "localhost"
+	} else {
+		cfg.Host = os.Getenv("POSTGRES_HOST")
+	}
+
+	if len(os.Getenv("POSTGRES_USER")) == 0 {
+		cfg.Username = "postgres"
+	} else {
+		cfg.Username = os.Getenv("POSTGRES_USER")
+	}
+
+	if len(os.Getenv("POSTGRES_PASSWORD")) == 0 {
+		cfg.Password = "1234"
+	} else {
+		cfg.Password = os.Getenv("POSTGRES_PASSWORD")
+	}
+
+	if len(os.Getenv("POSTGRES_DB")) == 0 {
+		cfg.DbName = "avito_users_db"
+	} else {
+		cfg.DbName = os.Getenv("POSTGRES_DB")
+	}
+
 	cfg.Port = "54320"
-	cfg.DbName = "avito_users_db"
 	cfg.Timeout = 5
 
 	poolConfig, err := NewPoolConfig(cfg)
@@ -62,7 +83,7 @@ func StartDB() *godb.Instance {
 		os.Exit(1)
 	}
 
-	poolConfig.MaxConns = 25
+	poolConfig.MaxConns = 20
 
 	c, err := NewConnection(poolConfig)
 	if err != nil {
