@@ -16,19 +16,7 @@
 
     make start-project
 
-    docker compose build
-    docker-compose up -d 
-
-Используя makefile создайте базу данных и две таблицы
-
-    make create_database 
-    make create-users-table 
-    make create-description-table
-
-Запустите сервер командой 
-
-    go run cmd/app/main.go  
-
+Автоматически поднимается сервер и база данных
 Сервер вернет *Ping OK!* Это будет означать, что сервер запущен и коннект с базой данных установлен.
 
 В основном для тестирования API я использую Postman или Insomnia.
