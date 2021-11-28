@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"math"
@@ -18,7 +18,7 @@ var (
 	static   = 100.00
 )
 
-func BalanceInfo(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) BalanceInfo(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	currency := parseform.Pars(r, currency)

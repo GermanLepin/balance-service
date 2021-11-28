@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"context"
@@ -27,7 +27,7 @@ var (
 	instance       = pg.StartDB()
 )
 
-func AddDescription(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) AddDescription(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	refill := string(mapUser[refill])
 	if refill == nilValue {

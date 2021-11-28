@@ -1,11 +1,12 @@
-package handlers_test
+package handler_test
 
 import (
 	"bytes"
+	"context"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"tech_task/internal/handlers"
+	"tech_task/internal/handler"
 	"testing"
 )
 
@@ -17,15 +18,21 @@ func TestWritingOff(t *testing.T) {
 			}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.WritingOff(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
+	service.WritingOff(w, req)
 
-	if status := r.Code; status != http.StatusOK {
+	if status := w.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -47,15 +54,21 @@ func TestWritingOffErrorUserId(t *testing.T) {
 		}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.WritingOff(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
+	service.WritingOff(w, req)
 
-	if status := r.Code; status != http.StatusBadRequest {
+	if status := w.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,15 +90,21 @@ func TestWritingOffErrorAmount(t *testing.T) {
 		}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.WritingOff(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
+	service.WritingOff(w, req)
 
-	if status := r.Code; status != http.StatusBadRequest {
+	if status := w.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,15 +126,21 @@ func TestWritingOffErrorFindUserIdDB(t *testing.T) {
 		}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/writing-off", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.WritingOff(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
+	service.WritingOff(w, req)
 
-	if status := r.Code; status != http.StatusBadRequest {
+	if status := w.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}

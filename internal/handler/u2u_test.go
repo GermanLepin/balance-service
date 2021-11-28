@@ -1,11 +1,12 @@
-package handlers_test
+package handler_test
 
 import (
 	"bytes"
+	"context"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
-	"tech_task/internal/handlers"
+	"tech_task/internal/handler"
 	"testing"
 )
 
@@ -18,15 +19,22 @@ func TestU2U(t *testing.T) {
 			}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/user-to-user", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.U2U(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
 
-	if status := r.Code; status != http.StatusOK {
+	service.U2U(w, req)
+
+	if status := w.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,15 +57,22 @@ func TestU2UErrorUserId(t *testing.T) {
 		}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/user-to-user", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.U2U(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
 
-	if status := r.Code; status != http.StatusBadRequest {
+	service.U2U(w, req)
+
+	if status := w.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -80,15 +95,22 @@ func TestU2UErrorAmount(t *testing.T) {
 		}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/user-to-user", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.U2U(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
 
-	if status := r.Code; status != http.StatusBadRequest {
+	service.U2U(w, req)
+
+	if status := w.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -111,15 +133,21 @@ func TestU2UErrorFindUserIdDB(t *testing.T) {
 		}`))
 
 	req := httptest.NewRequest("POST", "localhost:9000/user-to-user", JSONparams)
-	r := httptest.NewRecorder()
-	handlers.U2U(r, req)
+	ctx := context.Background()
+	w := httptest.NewRecorder()
+	r := new(mockRepository)
+	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+	service := handler.HttpService{
+		UserService: r,
+	}
+	service.U2U(w, req)
 
-	if status := r.Code; status != http.StatusBadRequest {
+	if status := w.Code; status != http.StatusBadRequest {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
 
-	body, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(w.Body)
 	if err != nil {
 		t.Fatal(err)
 	}

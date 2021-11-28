@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetUserId(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) GetUserId(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	userId := validate.IdValidate(w, userIdString)
@@ -27,7 +27,7 @@ func GetUserId(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) GetUserIdSort(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	userId := validate.IdValidate(w, userIdString)
@@ -73,7 +73,7 @@ func GetUserIdSort(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetUserIdSortDesc(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) GetUserIdSortDesc(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	userId := validate.IdValidate(w, userIdString)

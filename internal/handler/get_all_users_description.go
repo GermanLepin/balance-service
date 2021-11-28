@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"net/http"
@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	descriptionSlice := instance.GetAllUsersDB(ctx, w)
 	if descriptionSlice == nil {
 		return
@@ -19,7 +19,7 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	sortBy := string(mapUser[sortBy])
 	if sortByDesc == nilValue {
@@ -59,7 +59,7 @@ func GetAllUsersSort(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetAllUsersSortDesc(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) GetAllUsersSortDesc(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	sortBy := string(mapUser[sortBy])
 	if sortByDesc == nilValue {

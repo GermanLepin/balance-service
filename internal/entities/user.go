@@ -1,6 +1,10 @@
 package entities
 
-import "time"
+import (
+	"context"
+	"net/http"
+	"time"
+)
 
 type User struct {
 	Id      int64
@@ -16,4 +20,8 @@ type Description struct {
 	UserId          int64
 	CreatedAt       time.Time
 	Refil           string
+}
+
+type UserService interface {
+	BalanceInfoDB(ctx context.Context, w http.ResponseWriter, id int64) (userId int64, balance float64)
 }

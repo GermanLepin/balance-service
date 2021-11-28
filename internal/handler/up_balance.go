@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ import (
 	"tech_task/pkg/helpers/validate"
 )
 
-func UpBalance(w http.ResponseWriter, r *http.Request) {
+func (h *HttpService) UpBalance(w http.ResponseWriter, r *http.Request) {
 	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	amountString := string(mapUser[amount])

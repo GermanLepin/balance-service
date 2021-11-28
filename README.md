@@ -12,7 +12,9 @@
 
     https://github.com/GermanLepin/Tech_task.git
 
-Стартуем docker-compose.yaml: 
+Запуск проекта:
+
+    make start-project
 
     docker compose build
     docker-compose up -d 
@@ -169,7 +171,7 @@
     "amount": "6780",
     "description": "Покупка наушников",
     "sender_receiver": "Avito",
-    "refill": "F"
+    "refill": "T"
   }
 ```
 
@@ -181,7 +183,7 @@
     "amount": 6780,
     "description of transaction": "Покупка наушников",
     "sender or receiver": "Avito",
-    "refill the balance": "F"
+    "refill the balance": "T"
   }
 ```
 

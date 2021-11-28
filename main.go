@@ -12,28 +12,33 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"tech_task/internal/handlers"
+	"tech_task/internal/godb"
+	"tech_task/internal/handler"
 )
 
 func main() {
 	ctx := context.Background()
 	r := chi.NewRouter()
 
+	service := handler.HttpService{
+		UserService: &godb.Instance{},
+	}
+
 	r.Route("/", func(r chi.Router) {
-		r.Post("/up-balance", handlers.UpBalance)
-		r.Patch("/writing-off", handlers.WritingOff)
-		r.Get("/balance-info", handlers.BalanceInfo)
-		r.Patch("/user-to-user", handlers.U2U)
+		r.Post("/up-balance", service.UpBalance)
+		r.Patch("/writing-off", service.WritingOff)
+		r.Get("/balance-info", service.BalanceInfo)
+		r.Patch("/user-to-user", service.U2U)
 	})
 
 	r.Route("/description", func(r chi.Router) {
-		r.Post("/add", handlers.AddDescription)
-		r.Get("/get-user", handlers.GetUserId)
-		r.Get("/get-user/sort_by", handlers.GetUserIdSort)
-		r.Get("/get-user/sort_by/desc", handlers.GetUserIdSortDesc)
-		r.Get("/get-all", handlers.GetAllUsers)
-		r.Get("/get-all/sort_by", handlers.GetAllUsersSort)
-		r.Get("/get-all/sort_by/desc", handlers.GetAllUsersSortDesc)
+		r.Post("/add", service.AddDescription)
+		r.Get("/get-user", service.GetUserId)
+		r.Get("/get-user/sort_by", service.GetUserIdSort)
+		r.Get("/get-user/sort_by/desc", service.GetUserIdSortDesc)
+		r.Get("/get-all", service.GetAllUsers)
+		r.Get("/get-all/sort_by", service.GetAllUsersSort)
+		r.Get("/get-all/sort_by/desc", service.GetAllUsersSortDesc)
 	})
 
 	srv := &http.Server{
