@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func IdValidate(w http.ResponseWriter, r *http.Request, idAccount string) (id int64) {
+func IdValidate(w http.ResponseWriter, idAccount string) (id int64) {
 	id, err := strconv.ParseInt(idAccount, 0, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -24,5 +24,5 @@ func IdValidate(w http.ResponseWriter, r *http.Request, idAccount string) (id in
 		return
 	}
 
-	return
+	return id
 }

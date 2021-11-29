@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"math"
@@ -11,13 +11,23 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func BalanceInfo(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
-	userIdString := string(mapUser[id])
-	currency := parseform.Pars(w, r, currency)
+var (
+	currency = "currency"
+	RUB      = "RUB"
+	USD      = "USD"
+	static   = 100.00
+)
 
-	userId := validate.IdValidate(w, r, userIdString)
+func (h *HttpService) BalanceInfo(w http.ResponseWriter, r *http.Request) {
+	mapUser := parseform.ParsJSON(r)
+	userIdString := string(mapUser[id])
+	currency := parseform.Pars(r, currency)
+
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Errorf("Incorrect value id user")
+		jsonenc.JSONError(w, "Incorrect value id user")
 		return
 	}
 

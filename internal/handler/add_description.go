@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"context"
@@ -17,24 +17,18 @@ var (
 	refill         = "refill"
 	FALSE          = "F"
 	TRUE           = "T"
-	currency       = "currency"
-	RUB            = "RUB"
-	USD            = "USD"
-	static         = 100.00
 	nilValue       = ""
 	sortByDesc     = "sort_by_desc"
 	data           = "created_at"
 	id             = "id"
-	id1            = "id1"
-	id2            = "id2"
 	amount         = "amount"
-	sort_by        = "sort_by"
+	sortBy         = "sort_by"
 	ctx            = context.Background()
 	instance       = pg.StartDB()
 )
 
-func AddDescription(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+func (h *HttpService) AddDescription(w http.ResponseWriter, r *http.Request) {
+	mapUser := parseform.ParsJSON(r)
 	refill := string(mapUser[refill])
 	if refill == nilValue {
 		w.WriteHeader(http.StatusBadRequest)
@@ -47,38 +41,38 @@ func AddDescription(w http.ResponseWriter, r *http.Request) {
 	senderReceiver := string(mapUser[senderReceiver])
 
 	userIdString := string(mapUser[id])
-	userId := validate.IdValidate(w, r, userIdString)
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
 		return
 	}
 
 	amountString := string(mapUser[amount])
-	corectAmount := validate.AmountValidate(w, r, amountString)
-	if corectAmount < 0.01 {
+	correctAmount := validate.AmountValidate(w, amountString)
+	if correctAmount < 0.01 {
 		return
 	}
 
 	switch refill {
 	case TRUE:
-		instance.UpBalanceDB(ctx, w, userId, corectAmount)
+		instance.UpBalanceDB(ctx, userId, correctAmount)
 	case FALSE:
 		userId, balance := instance.BalanceInfoDB(ctx, w, userId)
 		if userId == 0 {
 			return
 		}
 
-		if corectAmount > balance {
+		if correctAmount > balance {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Errorf("Insufficient funds")
 			jsonenc.JSONError(w, "Insufficient funds")
 			return
 		}
 
-		instance.WritingOffDB(ctx, userId, corectAmount)
+		instance.WritingOffDB(ctx, userId, correctAmount)
 	}
 
 	_, balanceAtMoment := instance.BalanceInfoDB(ctx, w, userId)
 
-	instance.AddDescriptionDB(ctx, w, userId, balanceAtMoment, corectAmount, refill, description, senderReceiver)
-	jsonenc.JSONUAddDescription(w, userId, balanceAtMoment, corectAmount, refill, description, senderReceiver)
+	instance.AddDescriptionDB(ctx, userId, balanceAtMoment, correctAmount, refill, description, senderReceiver)
+	jsonenc.JSONUAddDescription(w, userId, balanceAtMoment, correctAmount, refill, description, senderReceiver)
 }

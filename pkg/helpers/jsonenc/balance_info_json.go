@@ -21,4 +21,6 @@ func JSONBalanceInfo(w http.ResponseWriter, id int64, userBalance float64) {
 	if err != nil {
 		panic(err)
 	}
+
+	w.Header().Set("Content-Type", "application/json")
 }

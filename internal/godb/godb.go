@@ -18,7 +18,7 @@ type Instance struct {
 	Db *pgxpool.Pool
 }
 
-func (i *Instance) UpBalanceDB(ctx context.Context, w http.ResponseWriter, id int64, amount float64) int64 {
+func (i *Instance) UpBalanceDB(ctx context.Context, id int64, amount float64) int64 {
 	user := &entities.User{}
 	userErr := i.Db.QueryRow(ctx, "SELECT id, balance FROM users WHERE id=$1;", id).Scan(&user.Id, &user.Balance)
 	if userErr != nil {
@@ -63,7 +63,7 @@ func (i *Instance) DeleteUserDB(ctx context.Context, id int64) {
 	}
 }
 
-func (i *Instance) AddDescriptionDB(ctx context.Context, w http.ResponseWriter, id int64, balanceAtMoment, corectAmount float64, refill, description, senderReceiver string) {
+func (i *Instance) AddDescriptionDB(ctx context.Context, id int64, balanceAtMoment, corectAmount float64, refill, description, senderReceiver string) {
 	_, err := i.Db.Exec(ctx, "INSERT INTO description (created_at, description, sender_receiver, balance_at_moment, amount, refill, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)", time.Now(), description, senderReceiver, balanceAtMoment, corectAmount, refill, id)
 	if err != nil {
 		fmt.Println(err)

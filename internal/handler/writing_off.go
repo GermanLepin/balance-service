@@ -1,4 +1,4 @@
-package handlers
+package handler
 
 import (
 	"net/http"
@@ -9,18 +9,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func WritingOff(w http.ResponseWriter, r *http.Request) {
-	mapUser := parseform.ParsJSON(w, r)
+func (h *HttpService) WritingOff(w http.ResponseWriter, r *http.Request) {
+	mapUser := parseform.ParsJSON(r)
 	userIdString := string(mapUser[id])
 	amountString := string(mapUser[amount])
 
-	userId := validate.IdValidate(w, r, userIdString)
+	userId := validate.IdValidate(w, userIdString)
 	if userId < 1 {
 		return
 	}
 
-	corectAmount := validate.AmountValidate(w, r, amountString)
-	if corectAmount < 0.01 {
+	correctAmount := validate.AmountValidate(w, amountString)
+	if correctAmount < 0.01 {
 		return
 	}
 
@@ -29,13 +29,13 @@ func WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if corectAmount > balance {
+	if correctAmount > balance {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Errorf("insufficient funds")
 		jsonenc.JSONError(w, "insufficient funds")
 		return
 	}
 
-	instance.WritingOffDB(ctx, userId, corectAmount)
-	jsonenc.JSONWritingOff(w, userId, corectAmount)
+	instance.WritingOffDB(ctx, userId, correctAmount)
+	jsonenc.JSONWritingOff(w, userId, correctAmount)
 }
