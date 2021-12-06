@@ -18,10 +18,9 @@ func NewGetAllUsersDescriptionsSortPostgres(db *pgxpool.Pool) *GetAllUsersDescri
 	return &GetAllUsersDescriptionsSortPostgres{db: db}
 }
 
-func (g *GetAllUsersDescriptionsSortPostgres) GetAllUsersDescriptionsSortDB(ctx context.Context, params, orderBy string) ([]tech_task.Description, error) {
+func (g *GetAllUsersDescriptionsSortPostgres) GetAllUsersDescriptionsSortDB(ctx context.Context, sortParams, orderBy, sqlOrderBy string) ([]tech_task.Description, error) {
 	var descriptions []tech_task.Description
-
-	rows, err := g.db.Query(ctx, fmt.Sprintf("SELECT id_description, sender_receiver, amount, description, balance_at_moment, user_id, created_at, refill FROM description ORDER BY %s %s;", params, orderBy))
+	rows, err := g.db.Query(ctx, fmt.Sprintf("SELECT id_description, sender_receiver, amount, description, balance_at_moment, user_id, created_at, refill FROM description %s %s %s;", sqlOrderBy, sortParams, orderBy))
 	if err != nil {
 		logrus.WithError(err).Errorf(err.Error())
 		return nil, err
@@ -42,8 +41,8 @@ func (g *GetAllUsersDescriptionsSortPostgres) GetAllUsersDescriptionsSortDB(ctx 
 	defer rows.Close()
 
 	if descriptions == nil {
-		logrus.Errorf("user not found in databas")
-		return nil, errors.New("user not found in databas")
+		logrus.Errorf("user not found in database")
+		return nil, errors.New("user not found in database")
 	}
 
 	return descriptions, nil

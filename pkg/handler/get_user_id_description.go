@@ -3,15 +3,27 @@ package handler
 import (
 	"context"
 	"net/http"
-	"tech_task/pkg/helpers/parse"
-
 	json "tech_task/pkg/helpers/json_responce"
+	"tech_task/pkg/helpers/parse"
+	"tech_task/pkg/helpers/validate"
 
 	"github.com/sirupsen/logrus"
 )
 
-func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Request) {
-	mapUser, _ := parse.ParsJSON(r)
+func (h *Handler) GetUserIdDescriptionsSort(w http.ResponseWriter, r *http.Request) {
+	mapUser, err := parse.ParsJSON(r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	userIdString := string(mapUser[id])
+	userId, err := validate.IdValidate(userIdString)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.JSONError(w, err.Error())
+		return
+	}
+
 	sortBy := mapUser[sortBy]
 	if sortBy != nilValue && sortBy != data && sortBy != amount {
 		w.WriteHeader(http.StatusBadRequest)
@@ -27,9 +39,8 @@ func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Req
 		json.JSONError(w, "Incorrect parameter for sorting, can only be created_at or amount")
 		return
 	}
-
 	if orderBy == nilValue && sortBy == nilValue {
-		err := h.selectDataFromDatabase(ctx, w, data, asc, sqlOrderBy)
+		err := h.selectDataFromDatabaseUserId(ctx, w, userId, data, asc, sqlOrderBy)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
@@ -39,14 +50,14 @@ func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Req
 	if orderBy == desc {
 		switch {
 		case sortBy == data:
-			err := h.selectDataFromDatabase(ctx, w, data, desc, sqlOrderBy)
+			err := h.selectDataFromDatabaseUserId(ctx, w, userId, data, desc, sqlOrderBy)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
 		case sortBy == amount:
-			err := h.selectDataFromDatabase(ctx, w, amount, desc, sqlOrderBy)
+			err := h.selectDataFromDatabaseUserId(ctx, w, userId, amount, desc, sqlOrderBy)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -57,14 +68,14 @@ func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Req
 	if orderBy == nilValue {
 		switch {
 		case sortBy == data:
-			err := h.selectDataFromDatabase(ctx, w, data, asc, sqlOrderBy)
+			err := h.selectDataFromDatabaseUserId(ctx, w, userId, data, asc, sqlOrderBy)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
 
 		case sortBy == amount:
-			err := h.selectDataFromDatabase(ctx, w, amount, asc, sqlOrderBy)
+			err := h.selectDataFromDatabaseUserId(ctx, w, userId, amount, asc, sqlOrderBy)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -73,8 +84,8 @@ func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Req
 	}
 }
 
-func (h *Handler) selectDataFromDatabase(ctx context.Context, w http.ResponseWriter, sortBy, orderBy, sqlOrderBy string) error {
-	descriptionSlice, err := h.services.GetAllUsersDescriptionsSort.GetAllDescriptionsSort(ctx, sortBy, orderBy, sqlOrderBy)
+func (h *Handler) selectDataFromDatabaseUserId(ctx context.Context, w http.ResponseWriter, userId int64, sortBy, orderBy, sqlOrderBy string) error {
+	descriptionSlice, err := h.services.GetUserIdDescriptionsSort.GetUserIdDescriptionsSort(ctx, userId, sortBy, orderBy, sqlOrderBy)
 	if err != nil {
 		return err
 	}

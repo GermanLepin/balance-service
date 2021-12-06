@@ -12,6 +12,7 @@ import (
 
 var (
 	asc            = "asc"
+	desc           = "desc"
 	description    = "description"
 	senderReceiver = "sender_receiver"
 	refill         = "refill"
@@ -20,9 +21,9 @@ var (
 	nilValue       = ""
 	data           = "created_at"
 	amount         = "amount"
-	desc           = "desc"
 	sortBy         = "sort_by"
 	orderBy        = "order_by"
+	sqlOrderBy     = "ORDER BY"
 	ctx            = context.Background()
 	id             = "id"
 	id1            = "id1"

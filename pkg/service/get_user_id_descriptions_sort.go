@@ -14,6 +14,6 @@ func NewGetUserIdDescriptionsSortServiceService(repo repository.GetUserIdDescrip
 	return &GetUserIdDescriptionsSortService{repo: repo}
 }
 
-func (g *GetUserIdDescriptionsSortService) GetUserIdDescriptionsSort(ctx context.Context, id int64, orderBy string) ([]tech_task.Description, error) {
-	return g.repo.GetUserIdDescriptionsSortDB(ctx, id, orderBy)
+func (g *GetUserIdDescriptionsSortService) GetUserIdDescriptionsSort(ctx context.Context, id int64, params, orderBy, sqlOrderBy string) ([]tech_task.Description, error) {
+	return g.repo.GetUserIdDescriptionsSortDB(ctx, id, params, orderBy, sqlOrderBy)
 }

@@ -17,10 +17,9 @@ func NewGetUserIdDescriptionsPostgres(db *pgxpool.Pool) *GetUserIdDescriptionsPo
 	return &GetUserIdDescriptionsPostgres{db: db}
 }
 
-func (g *GetUserIdDescriptionsPostgres) GetUserIdDescriptionsSortDB(ctx context.Context, userId int64, paramsSort string) ([]tech_task.Description, error) {
+func (g *GetUserIdDescriptionsPostgres) GetUserIdDescriptionsSortDB(ctx context.Context, userId int64, sortParams, orderBy, sqlOrderBy string) ([]tech_task.Description, error) {
 	var description []tech_task.Description
-
-	rows, err := g.db.Query(ctx, fmt.Sprintf("SELECT id_description, sender_receiver, amount, description, balance_at_moment, user_id, created_at, refill FROM description WHERE user_id=$1 ORDER BY %s;", paramsSort), userId)
+	rows, err := g.db.Query(ctx, fmt.Sprintf("SELECT id_description, sender_receiver, amount, description, balance_at_moment, user_id, created_at, refill FROM description WHERE user_id=$1 %s %s %s;", sqlOrderBy, sortParams, orderBy), userId)
 	if err != nil {
 		logrus.WithError(err).Errorf("Syntax error SQL")
 		return nil, err

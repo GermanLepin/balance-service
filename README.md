@@ -341,12 +341,13 @@
 
 Сортировка от большего к меньшему всех пользователя. Метод GET.
 
-    localhost:9000/description/get-all/sort_by/desc
+    localhost:9000/description/get-all
 
 *Добавить в тело запроса(JSON формат):*
 ```
   {
     "sort_by":"amount"
+    "order_by":"desc
   }  
 ```
 

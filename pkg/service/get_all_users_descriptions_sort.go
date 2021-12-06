@@ -14,6 +14,6 @@ func NewGetAllUsersDescriptionsSortService(repo repository.GetAllUsersDescriptio
 	return &GetAllUsersDescriptionsSortService{repo: repo}
 }
 
-func (g *GetAllUsersDescriptionsSortService) GetAllDescriptionsSort(ctx context.Context, params string, orderBy string) ([]tech_task.Description, error) {
-	return g.repo.GetAllUsersDescriptionsSortDB(ctx, params, orderBy)
+func (g *GetAllUsersDescriptionsSortService) GetAllDescriptionsSort(ctx context.Context, params, orderBy, sqlOrderBy string) ([]tech_task.Description, error) {
+	return g.repo.GetAllUsersDescriptionsSortDB(ctx, params, orderBy, sqlOrderBy)
 }

@@ -10,10 +10,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	mapUser map[string]string
-)
-
 func Pars(r *http.Request, value string) (correctVal string) {
 	r.ParseForm()
 	paramsRequest := r.Form
@@ -23,6 +19,8 @@ func Pars(r *http.Request, value string) (correctVal string) {
 }
 
 func ParsJSON(r *http.Request) (map[string]string, error) {
+	var mapUser map[string]string
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logrus.WithError(err).Errorf("Error parcing request")

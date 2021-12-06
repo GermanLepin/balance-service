@@ -22,16 +22,12 @@ type AddDescription interface {
 	AddDescriptionUser(context.Context, int64, float64, float64, string, string, string) error
 }
 
-type GetAllUsersDescriptions interface {
-	GetAllDescriptions(context.Context) ([]tech_task.Description, error)
-}
-
 type GetAllUsersDescriptionsSort interface {
-	GetAllDescriptionsSort(context.Context, string, string) ([]tech_task.Description, error)
+	GetAllDescriptionsSort(context.Context, string, string, string) ([]tech_task.Description, error)
 }
 
 type GetUserIdDescriptionsSort interface {
-	GetUserIdDescriptionsSort(context.Context, int64, string) ([]tech_task.Description, error)
+	GetUserIdDescriptionsSort(context.Context, int64, string, string, string) ([]tech_task.Description, error)
 }
 
 type Service struct {
@@ -39,7 +35,6 @@ type Service struct {
 	BalanceInfo
 	WritingOff
 	AddDescription
-	GetAllUsersDescriptions
 	GetAllUsersDescriptionsSort
 	GetUserIdDescriptionsSort
 }
@@ -50,7 +45,6 @@ func NewService(repos *repository.Repository) *Service {
 		BalanceInfo:                 NewBalanceInfoService(repos.BalanceInfo),
 		WritingOff:                  NewWritingOffService(repos.WritingOff),
 		AddDescription:              NewAddDescriptionService(repos.AddDescription),
-		GetAllUsersDescriptions:     NewGetAllUsersDescriptionsService(repos.GetAllUsersDescriptions),
 		GetAllUsersDescriptionsSort: NewGetAllUsersDescriptionsSortService(repos.GetAllUsersDescriptionsSort),
 		GetUserIdDescriptionsSort:   NewGetUserIdDescriptionsSortServiceService(repos.GetUserIdDescriptionsSort),
 	}

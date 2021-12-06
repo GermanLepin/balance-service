@@ -23,16 +23,12 @@ type AddDescription interface {
 	AddDescriptionDB(context.Context, int64, float64, float64, string, string, string) error
 }
 
-type GetAllUsersDescriptions interface {
-	GetAllUsersDescriptionsDB(context.Context) ([]tech_task.Description, error)
-}
-
 type GetAllUsersDescriptionsSort interface {
-	GetAllUsersDescriptionsSortDB(context.Context, string, string) ([]tech_task.Description, error)
+	GetAllUsersDescriptionsSortDB(context.Context, string, string, string) ([]tech_task.Description, error)
 }
 
 type GetUserIdDescriptionsSort interface {
-	GetUserIdDescriptionsSortDB(context.Context, int64, string) ([]tech_task.Description, error)
+	GetUserIdDescriptionsSortDB(context.Context, int64, string, string, string) ([]tech_task.Description, error)
 }
 
 type Repository struct {
@@ -40,7 +36,6 @@ type Repository struct {
 	BalanceInfo
 	WritingOff
 	AddDescription
-	GetAllUsersDescriptions
 	GetAllUsersDescriptionsSort
 	GetUserIdDescriptionsSort
 }
@@ -51,7 +46,6 @@ func NewRepository(db *pgxpool.Pool) *Repository {
 		BalanceInfo:                 NewBalanceInfoPostgres(db),
 		WritingOff:                  NewWritingOffPostgres(db),
 		AddDescription:              NewAddDescriptionPostgres(db),
-		GetAllUsersDescriptions:     NewGetAllUsersDescriptionsPostgres(db),
 		GetAllUsersDescriptionsSort: NewGetAllUsersDescriptionsSortPostgres(db),
 		GetUserIdDescriptionsSort:   NewGetUserIdDescriptionsPostgres(db),
 	}
