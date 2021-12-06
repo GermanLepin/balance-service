@@ -18,6 +18,8 @@ services:
   pgdb:
     restart: always
     image: postgres:11
+    volumes:
+    - ./.database/postgres/data:/var/lib/postgresql/data
     container_name: avito-tech-postgre
     environment:
       POSTGRES_USER: postgres

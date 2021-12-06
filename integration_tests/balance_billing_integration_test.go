@@ -1,4 +1,7 @@
-package integration_tests
+//go:build integration
+// +build integration
+
+package integration_test
 
 import (
 	"bytes"
@@ -10,8 +13,6 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-const ServeAddress = "localhost:9000"
-
 type BalanceBillingSuite struct {
 	suite.Suite
 }
@@ -20,130 +21,68 @@ func TestBalanceBillingSuite(t *testing.T) {
 	suite.Run(t, new(BalanceBillingSuite))
 }
 
-func (b *BalanceBillingSuite) TestUpBalanceRequest() {
-	JSONParams := bytes.NewBuffer([]byte(
-		`{
-			"id":"111111",
-			"amount":"1000.55"
-		}`))
-
-	balanceExpected := "{\"user id\":111111,\"top up an amount\":1000.55}\n"
-
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/up-balance", ServeAddress), JSONParams)
-	b.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
+func (b *BalanceBillingSuite) TestIntegration_BalanceBilling() {
+	tests := []struct {
+		name                 string
+		inputBody            string
+		url                  string
+		http                 string
+		expectedStatusCode   int
+		expectedResponseBody string
+	}{
+		{
+			name:                 "UpBalanceRequest",
+			inputBody:            `{"id":"111111","amount":"1000.55"}`,
+			http:                 http.MethodPost,
+			url:                  fmt.Sprintf("http://%s/up-balance", ServeAddress),
+			expectedStatusCode:   200,
+			expectedResponseBody: "{\"user id\":111111,\"top up an amount\":1000.55}\n",
+		},
+		{
+			name:                 "WritingOffRequest",
+			inputBody:            `{"id":"111111","amount":"250.55"}`,
+			http:                 http.MethodPatch,
+			url:                  fmt.Sprintf("http://%s/writing-off", ServeAddress),
+			expectedStatusCode:   200,
+			expectedResponseBody: "{\"user id\":111111,\"writing off an amount\":250.55}\n",
+		},
+		{
+			name:                 "UserToUserRequest",
+			inputBody:            `{"id1":"111111","id2":"222222","amount":"349.99"}`,
+			http:                 http.MethodPatch,
+			url:                  fmt.Sprintf("http://%s/user-to-user", ServeAddress),
+			expectedStatusCode:   200,
+			expectedResponseBody: "{\"user id sender\":111111,\"writing off an amount\":349.99,\"user id recipient\":222222}\n",
+		},
+		{
+			name:                 "BalanceInfoRequest",
+			inputBody:            `{"id":"111111"}`,
+			http:                 http.MethodGet,
+			url:                  fmt.Sprintf("http://%s/balance-info", ServeAddress),
+			expectedStatusCode:   200,
+			expectedResponseBody: "{\"user id\":111111,\"balance\":400.01}\n",
+		},
 	}
-	defer result.Body.Close()
+	for _, test := range tests {
+		b.Run(test.name, func() {
+			req, err := http.NewRequest(test.http, test.url,
+				bytes.NewBufferString(test.inputBody))
+			b.NoError(err)
 
-	upBalance, err := io.ReadAll(result.Body)
-	b.NoError(err)
+			client := http.Client{}
+			result, err := client.Do(req)
+			if err != nil {
+				fmt.Println(err)
+			}
+			defer result.Body.Close()
 
-	b.Equal(http.StatusOK, result.StatusCode)
-	b.Equal(balanceExpected, string(upBalance))
-	b.NoError(err)
-}
+			testResponseBody, err := io.ReadAll(result.Body)
+			b.NoError(err)
 
-func (b *BalanceBillingSuite) TestWritingOffRequest() {
-	JSONParams := bytes.NewBuffer([]byte(
-		`{
-			"id":"111111",
-			"amount":"250.55"
-		}`))
+			b.Equal(result.StatusCode, test.expectedStatusCode)
+			b.Equal(test.expectedResponseBody, string(testResponseBody))
+			b.NoError(err)
 
-	balanceExpected := "{\"user id\":111111,\"writing off an amount\":250.55}\n"
-
-	req, err := http.NewRequest(http.MethodPatch, fmt.Sprintf("http://%s/writing-off", ServeAddress), JSONParams)
-	b.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
+		})
 	}
-	defer result.Body.Close()
-
-	upBalance, err := io.ReadAll(result.Body)
-	b.NoError(err)
-
-	b.Equal(http.StatusOK, result.StatusCode)
-	b.Equal(balanceExpected, string(upBalance))
-	b.NoError(err)
-}
-
-func (b *BalanceBillingSuite) TestUserToUserRequest() {
-	JSONParams := bytes.NewBuffer([]byte(`{
-		"id1":"111111",
-		"id2":"222222",
-		"amount":"370"
-	}`))
-	balanceExpected := "{\"user id sender\":111111,\"writing off an amount\":370,\"user id recipient\":222222}\n"
-
-	req, err := http.NewRequest(http.MethodPatch, fmt.Sprintf("http://%s/user-to-user", ServeAddress), JSONParams)
-	b.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer result.Body.Close()
-
-	balance, err := io.ReadAll(result.Body)
-	b.NoError(err)
-
-	b.Equal(http.StatusOK, result.StatusCode)
-	b.Equal(balanceExpected, string(balance))
-	b.NoError(err)
-}
-
-func (b *BalanceBillingSuite) TestBalanceInfoRequest() {
-	JSONParams := bytes.NewBuffer([]byte(`{
-		"id":"111111"
-	}`))
-	balanceExpected := "{\"user id\":111111,\"balance\":380}\n"
-
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://%s/balance-info", ServeAddress), JSONParams)
-	b.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer result.Body.Close()
-
-	balance, err := io.ReadAll(result.Body)
-	b.NoError(err)
-
-	b.Equal(http.StatusOK, result.StatusCode)
-	b.Equal(balanceExpected, string(balance))
-	b.NoError(err)
-}
-
-func (b *BalanceBillingSuite) TestBalanceInfoConverUSDRequest() {
-	JSONParams := bytes.NewBuffer([]byte(`{
-		"id":"111111"
-	}`))
-
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://%s/balance-info?currency=USD", ServeAddress), JSONParams)
-	b.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer result.Body.Close()
-
-	balance, err := io.ReadAll(result.Body)
-	b.NoError(err)
-
-	b.Equal(http.StatusOK, result.StatusCode)
-	b.NoError(err)
-	fmt.Println(string(balance))
-	fmt.Println("ok")
 }

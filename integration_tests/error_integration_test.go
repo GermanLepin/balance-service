@@ -1,4 +1,7 @@
-package integration_tests
+//go:build integration
+// +build integration
+
+package integration_test
 
 import (
 	"bytes"
@@ -10,117 +13,86 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+const ServeAddress = "localhost:9000"
+
 type ErrorSuite struct {
 	suite.Suite
 }
 
 func TestErrorSuite(t *testing.T) {
-	suite.Run(t, new(DescriptionSuite))
+	suite.Run(t, new(ErrorSuite))
 }
 
-func (e *ErrorSuite) TestErrorUserId() {
-	JSONParams := bytes.NewBuffer([]byte(
-		`{
-			"id":"-111111",
-			"amount":"1000.55"
-		}`))
-
-	balanceExpected := "{\"error\":\"Incorrect value id user\"}\n"
-
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/up-balance", ServeAddress), JSONParams)
-	e.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
+func (b *ErrorSuite) TestIntegration_ErrorIntegration() {
+	tests := []struct {
+		name                 string
+		inputBody            string
+		url                  string
+		http                 string
+		expectedStatusCode   int
+		expectedResponseBody string
+	}{
+		{
+			name:                 "ErrorUserId",
+			inputBody:            `{"id":"-111111","amount":"1000.55"}`,
+			http:                 http.MethodPost,
+			url:                  fmt.Sprintf("http://%s/up-balance", ServeAddress),
+			expectedStatusCode:   400,
+			expectedResponseBody: "{\"error\":\"incorrect value id user\"}\n",
+		},
+		{
+			name:                 "ErrorAmount",
+			inputBody:            `{"id":"111111","amount":"250.5556"}`,
+			http:                 http.MethodPatch,
+			url:                  fmt.Sprintf("http://%s/writing-off", ServeAddress),
+			expectedStatusCode:   400,
+			expectedResponseBody: "{\"error\":\"the amount have more then 2 decimal places\"}\n",
+		},
+		{
+			name:                 "ErrorNegativeAmount",
+			inputBody:            `{"id":"111111","amount":"-250.55"}`,
+			http:                 http.MethodPatch,
+			url:                  fmt.Sprintf("http://%s/writing-off", ServeAddress),
+			expectedStatusCode:   400,
+			expectedResponseBody: "{\"error\":\"the amount is negative\"}\n",
+		},
+		{
+			name:                 "UserNotFound",
+			inputBody:            `{"id":"99999999999"}`,
+			http:                 http.MethodGet,
+			url:                  fmt.Sprintf("http://%s/balance-info", ServeAddress),
+			expectedStatusCode:   400,
+			expectedResponseBody: "{\"error\":\"User not found\"}\n",
+		},
+		{
+			name:                 "BalanceInfoErrorConverUSDRequest",
+			inputBody:            `{"id":"111111"}`,
+			http:                 http.MethodGet,
+			url:                  fmt.Sprintf("http://%s/balance-info?convert&currency=US", ServeAddress),
+			expectedStatusCode:   400,
+			expectedResponseBody: "{\"error\":\"Invalid currency type, only USD\"}\n",
+		},
 	}
-	defer result.Body.Close()
+	for _, test := range tests {
+		b.Run(test.name, func() {
+			req, err := http.NewRequest(test.http, test.url,
+				bytes.NewBufferString(test.inputBody))
+			b.NoError(err)
 
-	balance, err := io.ReadAll(result.Body)
-	e.NoError(err)
+			client := http.Client{}
+			result, err := client.Do(req)
+			if err != nil {
+				fmt.Println(err)
+			}
+			defer result.Body.Close()
 
-	e.Equal(http.StatusBadRequest, result.StatusCode)
-	e.Equal(balanceExpected, string(balance))
-	e.NoError(err)
-}
+			testResponseBody, err := io.ReadAll(result.Body)
+			b.NoError(err)
 
-func (e *ErrorSuite) TestErrorAmount() {
-	JSONParams := bytes.NewBuffer([]byte(
-		`{
-			"id":"111111",
-			"amount":"-1000.557865764758"
-		}`))
+			b.Equal(result.StatusCode, test.expectedStatusCode)
+			b.Equal(test.expectedResponseBody, string(testResponseBody))
+			b.NoError(err)
 
-	balanceExpected := "{\"error\":\"The amount have more then 2 decimal places\"}\n"
-
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/up-balance", ServeAddress), JSONParams)
-	e.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
+		})
 	}
-	defer result.Body.Close()
-
-	balance, err := io.ReadAll(result.Body)
-	e.NoError(err)
-
-	e.Equal(http.StatusBadRequest, result.StatusCode)
-	e.Equal(balanceExpected, string(balance))
-	e.NoError(err)
-}
-
-func (e *ErrorSuite) TestBalanceInfoErrorFindUserIdDB() {
-	JSONParams := bytes.NewBuffer([]byte(
-		`{
-			"id":"111111111111",
-			"amount":"1000.55"
-		}`))
-
-	balanceExpected := "{\"error\":\"User not found in database\"}\n"
-
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://%s/balance-info", ServeAddress), JSONParams)
-	e.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer result.Body.Close()
-
-	balance, err := io.ReadAll(result.Body)
-	e.NoError(err)
-
-	e.Equal(http.StatusBadRequest, result.StatusCode)
-	e.Equal(balanceExpected, string(balance))
-	e.NoError(err)
-}
-
-func (b *BalanceBillingSuite) TestBalanceInfoErrorConverUSDRequest() {
-	JSONParams := bytes.NewBuffer([]byte(`{
-		"id":"111111"
-	}`))
-
-	balanceExpected := "{\"error\":\"Invalid currency type, only USD\"}\n"
-
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("http://%s/balance-info?currency=U", ServeAddress), JSONParams)
-	b.NoError(err)
-
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer result.Body.Close()
-
-	balance, err := io.ReadAll(result.Body)
-	b.NoError(err)
-
-	b.Equal(http.StatusBadRequest, result.StatusCode)
-	b.NoError(err)
-	b.Equal(balanceExpected, string(balance))
-	fmt.Println("ok")
 }
