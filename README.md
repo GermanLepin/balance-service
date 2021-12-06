@@ -117,7 +117,7 @@
 
 Метод получения текущего баланса пользователя в иностранной валюте. Принимает id пользователя и currency=USD. GET метод.
 
-      localhost:9000/balance-info/convert?currency=USD
+      localhost:9000/balance-info?convert&currency=USD
 
 *Добавить в тело запроса(JSON формат):*
 ```

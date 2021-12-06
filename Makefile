@@ -33,7 +33,7 @@ docker.restart: docker.stop docker.start
 create.all-tables: create-database create-users-table create-description-table
 
 create-database:
-	@docker-compose exec pgdb psql -U postgres -c  "SELECT 1 FROM pg_database WHERE datname = 'avito_users_db'"
+	@docker-compose exec pgdb psql -U postgres -c 'CREATE DATABASE avito_users_db'
 	
 create-users-table:
 	@docker-compose exec pgdb psql  avito_users_db -U postgres  -c 'CREATE TABLE IF NOT EXISTS users (id INTEGER NOT NULL PRIMARY KEY, balance NUMERIC(10,2));'
