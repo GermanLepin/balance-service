@@ -31,7 +31,7 @@ func (h *Handler) BalanceInfo(w http.ResponseWriter, r *http.Request) {
 	_, rubBalance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, "User not found in database")
+		json.JSONError(w, "User not found")
 		return
 	}
 
