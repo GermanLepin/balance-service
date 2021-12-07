@@ -72,15 +72,15 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 	case TRUE:
 		_, _, err := h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			logrus.WithError(err).Errorf("User not found in database")
+			w.WriteHeader(http.StatusBadRequest)
+			json.JSONError(w, "User not found")
 			return
 		}
 	case FALSE:
 		userId, balance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.JSONError(w, "User not found in database")
+			json.JSONError(w, "User not found")
 			return
 		}
 
@@ -97,14 +97,14 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 	userId, balanceAtMoment, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, "User not found in database")
+		json.JSONError(w, "User not found")
 		return
 	}
 
 	err = h.services.AddDescription.AddDescriptionUser(ctx, userId, balanceAtMoment, correctAmount, refill, description, senderReceiver)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, "User not found in database")
+		json.JSONError(w, "User not found")
 		return
 	}
 

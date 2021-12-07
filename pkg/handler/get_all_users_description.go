@@ -31,7 +31,8 @@ func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Req
 	if orderBy == nilValue && sortBy == nilValue {
 		err := h.selectDataFromDatabase(ctx, w, data, asc, sqlOrderBy)
 		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			w.WriteHeader(http.StatusBadRequest)
+			json.JSONError(w, "User not found")
 			return
 		}
 	}
@@ -41,14 +42,16 @@ func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Req
 		case sortBy == data:
 			err := h.selectDataFromDatabase(ctx, w, data, desc, sqlOrderBy)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				w.WriteHeader(http.StatusBadRequest)
+				json.JSONError(w, "User not found")
 				return
 			}
 
 		case sortBy == amount:
 			err := h.selectDataFromDatabase(ctx, w, amount, desc, sqlOrderBy)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				w.WriteHeader(http.StatusBadRequest)
+				json.JSONError(w, "User not found")
 				return
 			}
 		}
@@ -59,14 +62,16 @@ func (h *Handler) GetAllUsersDescriptionsSort(w http.ResponseWriter, r *http.Req
 		case sortBy == data:
 			err := h.selectDataFromDatabase(ctx, w, data, asc, sqlOrderBy)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				w.WriteHeader(http.StatusBadRequest)
+				json.JSONError(w, "User not found")
 				return
 			}
 
 		case sortBy == amount:
 			err := h.selectDataFromDatabase(ctx, w, amount, asc, sqlOrderBy)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				w.WriteHeader(http.StatusBadRequest)
+				json.JSONError(w, "User not found")
 				return
 			}
 		}

@@ -45,7 +45,7 @@ func (h *Handler) U2U(w http.ResponseWriter, r *http.Request) {
 	_, balance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId1)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, "User not found in database")
+		json.JSONError(w, "User not found")
 		return
 	}
 
