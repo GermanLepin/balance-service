@@ -1,234 +1,88 @@
-package handler_test
+package handler
 
-// import (
-// 	"bytes"
-// 	"context"
-// 	"fmt"
-// 	"net/http"
-// 	"net/http/httptest"
-// 	"testing"
+import (
+	"bytes"
+	"context"
+	"errors"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 
-// 	"github.com/stretchr/testify/mock"
-// )
+	"tech_task/pkg/service"
+	service_mocks "tech_task/pkg/service/mocks"
 
-// const (
-// 	ServeAddress = "localhost:9000"
-// )
+	"github.com/go-chi/chi"
+	"github.com/golang/mock/gomock"
+	"gotest.tools/assert"
+)
 
-// type mockRepository struct {
-// 	mock.Mock
-// }
+func TestHandler_BalanceInfo(t *testing.T) {
+	type mockBehavior func(r *service_mocks.MockBalanceInfo, id int64)
+	ctx := context.Background()
 
-// func (r *mockRepository) BalanceInfoDB(ctx context.Context, w http.ResponseWriter, id int64) (userId int64, balance float64) {
-// 	args := r.Called(ctx, w, id)
-// 	argId := args.Get(0)
-// 	argBalance := args.Get(1)
-// 	if argId == nil {
-// 		return 0, 0
-// 	}
+	tests := []struct {
+		name                 string
+		inputBody            string
+		inputUser            int64
+		mockBehavior         mockBehavior
+		expectedStatusCode   int
+		expectedResponseBody string
+	}{
+		{
+			name:      "Ok",
+			inputBody: `{"id":"1"}`,
+			inputUser: 1,
+			mockBehavior: func(r *service_mocks.MockBalanceInfo, id int64) {
+				var idResponce int64 = 1
+				var balanceResponce float64 = 830.55
+				r.EXPECT().BalanceInfoUser(ctx, id).Return(idResponce, balanceResponce, nil)
+			},
+			expectedStatusCode:   200,
+			expectedResponseBody: "{\"user id\":1,\"balance\":830.55}\n",
+		},
+		{
+			name:                 "Wrong Input",
+			inputBody:            `{"id":"-1"}`,
+			inputUser:            -1,
+			mockBehavior:         func(r *service_mocks.MockBalanceInfo, id int64) {},
+			expectedStatusCode:   400,
+			expectedResponseBody: "{\"error\":\"incorrect value id user\"}\n",
+		},
+		{
+			name:      "User not found",
+			inputBody: `{"id":"10000"}`,
+			inputUser: 10000,
+			mockBehavior: func(r *service_mocks.MockBalanceInfo, id int64) {
+				var idResponce int64 = 0
+				var balanceResponce float64 = 0
+				r.EXPECT().BalanceInfoUser(ctx, id).Return(idResponce, balanceResponce, errors.New("{\"error\":\"User not found\"}\n"))
+			},
+			expectedStatusCode:   400,
+			expectedResponseBody: "{\"error\":\"User not found\"}\n",
+		},
+	}
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			c := gomock.NewController(t)
+			defer c.Finish()
 
-// 	fmt.Println(argId, argBalance)
+			repo := service_mocks.NewMockBalanceInfoUser(c)
+			test.mockBehavior(repo, test.inputUser)
 
-// 	return 0, 0
-// }
+			services := &service.Service{BalanceInfo: repo}
+			handler := Handler{services}
 
-// func TestTestBalanceInfo(t *testing.T) {
-// 	JSONParams := bytes.NewBuffer([]byte(`{
-// 			"id":"1"
-// 			}`))
+			r := chi.NewRouter()
+			r.Get("/balance-info", handler.BalanceInfo)
 
-// 	w := httptest.NewRecorder()
-// 	req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("http://%s/balance-info", ServeAddress), JSONParams)
-// 	ctx := context.Background()
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, "/balance-info",
+				bytes.NewBufferString(test.inputBody))
 
-// 	r := new(mockRepository)
-// 	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
+			r.ServeHTTP(w, req)
 
-// }
-
-// func TestBalanceInfo(t *testing.T) {
-// 	t.Run("good user_id", func(t *testing.T) {
-// 		JSONParams := bytes.NewBuffer([]byte(
-// 			`{
-// 		"id":"1"
-// 		}`))
-
-// 		w := httptest.NewRecorder()
-// 		req, err := http.NewRequest("GET", "localhost:9000/balance-info", JSONParams)
-// 		if err != nil {
-// 			t.Fatal(err)
-// 		}
-
-// 		req = req.WithContext(ctx)
-// 		repo := new(mockRepository)
-// 		repo.On("BalanceInfo", 1, 1059.55).Return(mUser.Balance, nil)
-// 		res := w.Result()
-// 		defer res.Body.Close()
-// 		x, err := io.ReadAll(res.Body)
-// 		fmt.Println(repo)
-// 		fmt.Println(x)
-// 		fmt.Println("rrr")
-
-// 	})
-
-// 	r := httptest.NewRecorder()
-// 	handler := http.HandlerFunc(BalanceInfo)
-// 	handler.ServeHTTP(r, req)
-
-// 	if status := r.Code; status != http.StatusOK {
-// 		t.Errorf("handler returned wrong status code: got %v want %v",
-// 			status, http.StatusOK)
-// 	}
-
-// 	body, err := ioutil.ReadAll(r.Body)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	result := string(body)
-// 	expected := "{\"user id\":1,\"top up an amount\":1059.55}\n"
-
-// 	repo.On("BalanceInfo", 1, 1059.55).Return(mUser.mockUser, nil)
-
-//service := HttpService{
-//	UserService: repo,
-//}
-//service.GetReceivers(w, r)
-// 	res := w.Result()
-// 	defer res.Body.Close()
-// 	str, err := io.ReadAll(res.Body)
-// 	require.Nil(t, err)
-// 	var resBody mockReceivers
-// 	err = json.Unmarshal(str, &resBody)
-// 	require.Nil(t, err)
-// 	require.Equal(t, http.StatusOK, w.Result().StatusCode)
-// 	require.Equal(t, mUser.Receivers, resBody.Receivers)
-
-// 	if result != expected {
-// 		t.Errorf("handler body: got %v want %s",
-// 			result, expected)
-// 	}
-// }
-
-// func TestpBalanceErrorUserId(t *testing.T) {
-// 	JSONparams := bytes.NewBuffer([]byte(
-// 		`{
-// 				"id":"-1",
-// 				"amount":"10590.55"
-// 			}`))
-
-// 	req, err := http.NewRequest("POST", "localhost:9000/balance-info", JSONparams)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	ctx := context.Background()
-// 	w := httptest.NewRecorder()
-// 	r := new(mockRepository)
-// 	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
-// 	service := handler.HttpService{
-// 		UserService: r,
-// 	}
-// 	handler := http.HandlerFunc(service.BalanceInfo)
-// 	handler.ServeHTTP(w, req)
-
-// 	if status := w.Code; status != http.StatusBadRequest {
-// 		t.Errorf("handler returned wrong status code: got %v want %v",
-// 			status, http.StatusOK)
-// 	}
-
-// 	body, err := ioutil.ReadAll(w.Body)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	result := string(body)
-// 	expected := "{\"error\":\"Incorrect value id user\"}\n"
-
-// 	if result != expected {
-// 		t.Errorf("handler body: got %v want %v",
-// 			result, expected)
-// 	}
-// }
-
-// func TestUpBalanceErrorAmoun(t *testing.T) {
-// 	JSONparams := bytes.NewBuffer([]byte(
-// 		`{
-// 				"id":"1",
-// 				"amount":"-10590.55"
-// 			}`))
-
-// 	req, err := http.NewRequest("POST", "localhost:9000/balance-info", JSONparams)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	ctx := context.Background()
-// 	w := httptest.NewRecorder()
-// 	r := new(mockRepository)
-// 	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
-// 	service := handler.HttpService{
-// 		UserService: r,
-// 	}
-// 	handler := http.HandlerFunc(service.BalanceInfo)
-// 	handler.ServeHTTP(w, req)
-
-// 	if status := w.Code; status != http.StatusBadRequest {
-// 		t.Errorf("handler returned wrong status code: got %v want %v",
-// 			status, http.StatusOK)
-// 	}
-
-// 	body, err := ioutil.ReadAll(w.Body)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	result := string(body)
-// 	expected := "{\"error\":\"The amount is negative\"}\n"
-
-// 	if result != expected {
-// 		t.Errorf("handler body: got %v want %v",
-// 			result, expected)
-// 	}
-// }
-
-// func TestBalanceInfoErrorFindUserIdDB(t *testing.T) {
-// 	JSONparams := bytes.NewBuffer([]byte(
-// 		`{
-// 				"id":"9999999",
-// 				"amount":"10590.55"
-// 			}`))
-
-// 	req, err := http.NewRequest("POST", "localhost:9000/balance-info", JSONparams)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	ctx := context.Background()
-// 	w := httptest.NewRecorder()
-// 	r := new(mockRepository)
-// 	r.On("BalanceInfoDB", ctx, w, 1).Return(1, 100.55)
-// 	service := handler.HttpService{
-// 		UserService: r,
-// 	}
-// 	handler := http.HandlerFunc(service.BalanceInfo)
-// 	handler.ServeHTTP(w, req)
-
-// 	if status := w.Code; status != http.StatusBadRequest {
-// 		t.Errorf("handler returned wrong status code: got %v want %v",
-// 			status, http.StatusOK)
-// 	}
-
-// 	body, err := ioutil.ReadAll(w.Body)
-// 	if err != nil {
-// 		t.Fatal(err)
-// 	}
-
-// 	result := string(body)
-// 	expected := "{\"error\":\"User not found in database\"}\n"
-
-// 	if result != expected {
-// 		t.Errorf("handler body: got %v want %v",
-// 			result, expected)
-// 	}
-// }
+			assert.Equal(t, w.Code, test.expectedStatusCode)
+			assert.Equal(t, w.Body.String(), test.expectedResponseBody)
+		})
+	}
+}
