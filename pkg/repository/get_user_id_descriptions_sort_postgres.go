@@ -40,7 +40,7 @@ func (g *GetUserIdDescriptionsPostgres) GetUserIdDescriptionsSortDB(ctx context.
 	}
 
 	if description == nil {
-		logrus.Errorf("User not found in databas")
+		logrus.Errorf("User not found")
 		return nil, err
 	}
 

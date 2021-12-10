@@ -70,7 +70,7 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 
 	switch refill {
 	case TRUE:
-		_, _, err := h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
+		err := h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.JSONError(w, "User not found")

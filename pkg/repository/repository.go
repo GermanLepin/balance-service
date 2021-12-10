@@ -8,7 +8,7 @@ import (
 )
 
 type UpBalance interface {
-	UpBalanceDB(context.Context, int64, float64) (int64, float64, error)
+	UpBalanceDB(context.Context, int64, float64) error
 }
 
 type BalanceInfo interface {

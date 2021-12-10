@@ -1,79 +1,82 @@
-package integration_tests
+//go:build integration
+// +build integration
 
-import (
-	"bytes"
-	"fmt"
-	"io"
-	"net/http"
-	"testing"
+package integration_test
 
-	"github.com/stretchr/testify/suite"
-)
+// import (
+// 	"bytes"
+// 	"fmt"
+// 	"io"
+// 	"net/http"
+// 	"testing"
 
-type DescriptionSuite struct {
-	suite.Suite
-}
+// 	"github.com/stretchr/testify/suite"
+// )
 
-func TestDescriptionSuite(t *testing.T) {
-	suite.Run(t, new(DescriptionSuite))
-}
+// type DescriptionSuite struct {
+// 	suite.Suite
+// }
 
-func (d *DescriptionSuite) TestAddDescriptionRefillTrue() {
-	JSONParams := bytes.NewBuffer([]byte(
-		`{
-			"id": "999999",
-			"amount": "6780",
-			"description": "Продажа наушников",
-			"sender_receiver": "Avito",
-			"refill": "T"
-		}`))
+// func TestDescriptionSuite(t *testing.T) {
+// 	suite.Run(t, new(DescriptionSuite))
+// }
 
-	balanceExpected := "{\"user id\":999999,\"balance at moment\":6780,\"amount\":6780,\"description of transaction\":\"Продажа наушников\",\"sender or receiver\":\"Avito\",\"refill the balance\":\"T\"}\n"
+// func (d *DescriptionSuite) TestIntegration_AddDescriptionRefillTrue() {
+// 	JSONParams := bytes.NewBuffer([]byte(
+// 		`{
+// 			"id": "999999",
+// 			"amount": "6780",
+// 			"description": "Продажа наушников",
+// 			"sender_receiver": "Avito",
+// 			"refill": "T"
+// 		}`))
 
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/description/add", ServeAddress), JSONParams)
-	d.NoError(err)
+// 	balanceExpected := "{\"user id\":999999,\"balance at moment\":6780,\"amount\":6780,\"description of transaction\":\"Продажа наушников\",\"sender or receiver\":\"Avito\",\"refill the balance\":\"T\"}\n"
 
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer result.Body.Close()
+// 	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/description/add", ServeAddress), JSONParams)
+// 	d.NoError(err)
 
-	upBalance, err := io.ReadAll(result.Body)
-	d.NoError(err)
+// 	client := http.Client{}
+// 	result, err := client.Do(req)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	defer result.Body.Close()
 
-	d.Equal(http.StatusOK, result.StatusCode)
-	d.Equal(balanceExpected, string(upBalance))
-	d.NoError(err)
-}
+// 	upBalance, err := io.ReadAll(result.Body)
+// 	d.NoError(err)
 
-func (d *DescriptionSuite) TestAddDescriptionRefillFalse() {
-	JSONParams := bytes.NewBuffer([]byte(
-		`{
-			"id": "999999",
-			"amount": "5320",
-			"description": "Покупка куртки",
-			"sender_receiver": "Avito",
-			"refill": "F"
-		}`))
+// 	d.Equal(http.StatusOK, result.StatusCode)
+// 	d.Equal(balanceExpected, string(upBalance))
+// 	d.NoError(err)
+// }
 
-	balanceExpected := "{\"user id\":999999,\"balance at moment\":1460,\"amount\":5320,\"description of transaction\":\"Покупка куртки\",\"sender or receiver\":\"Avito\",\"refill the balance\":\"F\"}\n"
+// func (d *DescriptionSuite) TestAddDescriptionRefillFalse() {
+// 	JSONParams := bytes.NewBuffer([]byte(
+// 		`{
+// 			"id": "999999",
+// 			"amount": "5320",
+// 			"description": "Покупка куртки",
+// 			"sender_receiver": "Avito",
+// 			"refill": "F"
+// 		}`))
 
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/description/add", ServeAddress), JSONParams)
-	d.NoError(err)
+// 	balanceExpected := "{\"user id\":999999,\"balance at moment\":1460,\"amount\":5320,\"description of transaction\":\"Покупка куртки\",\"sender or receiver\":\"Avito\",\"refill the balance\":\"F\"}\n"
 
-	client := http.Client{}
-	result, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-	}
-	defer result.Body.Close()
+// 	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("http://%s/description/add", ServeAddress), JSONParams)
+// 	d.NoError(err)
 
-	upBalance, err := io.ReadAll(result.Body)
-	d.NoError(err)
+// 	client := http.Client{}
+// 	result, err := client.Do(req)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 	}
+// 	defer result.Body.Close()
 
-	d.Equal(http.StatusOK, result.StatusCode)
-	d.Equal(balanceExpected, string(upBalance))
-	d.NoError(err)
-}
+// 	upBalance, err := io.ReadAll(result.Body)
+// 	d.NoError(err)
+
+// 	d.Equal(http.StatusOK, result.StatusCode)
+// 	d.Equal(balanceExpected, string(upBalance))
+// 	d.NoError(err)
+// }

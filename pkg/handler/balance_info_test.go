@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"tech_task/pkg/service"
-	service_mocks "tech_task/pkg/service/mocks"
+	mock_service "tech_task/pkg/service/mocks"
 
 	"github.com/go-chi/chi"
 	"github.com/golang/mock/gomock"
@@ -17,7 +17,7 @@ import (
 )
 
 func TestHandler_BalanceInfo(t *testing.T) {
-	type mockBehavior func(r *service_mocks.MockBalanceInfo, id int64)
+	type mockBehavior func(r *mock_service.MockBalanceInfo, id int64)
 	ctx := context.Background()
 
 	tests := []struct {
@@ -32,10 +32,11 @@ func TestHandler_BalanceInfo(t *testing.T) {
 			name:      "Ok",
 			inputBody: `{"id":"1"}`,
 			inputUser: 1,
-			mockBehavior: func(r *service_mocks.MockBalanceInfo, id int64) {
-				var idResponce int64 = 1
-				var balanceResponce float64 = 830.55
-				r.EXPECT().BalanceInfoUser(ctx, id).Return(idResponce, balanceResponce, nil)
+			mockBehavior: func(r *mock_service.MockBalanceInfo, id int64) {
+				var uid int64 = 1
+				var balance float64 = 830.55
+				var err error = nil
+				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			expectedStatusCode:   200,
 			expectedResponseBody: "{\"user id\":1,\"balance\":830.55}\n",
@@ -44,18 +45,19 @@ func TestHandler_BalanceInfo(t *testing.T) {
 			name:                 "Wrong Input",
 			inputBody:            `{"id":"-1"}`,
 			inputUser:            -1,
-			mockBehavior:         func(r *service_mocks.MockBalanceInfo, id int64) {},
+			mockBehavior:         func(r *mock_service.MockBalanceInfo, id int64) {},
 			expectedStatusCode:   400,
 			expectedResponseBody: "{\"error\":\"incorrect value id user\"}\n",
 		},
 		{
 			name:      "User not found",
-			inputBody: `{"id":"10000"}`,
-			inputUser: 10000,
-			mockBehavior: func(r *service_mocks.MockBalanceInfo, id int64) {
-				var idResponce int64 = 0
-				var balanceResponce float64 = 0
-				r.EXPECT().BalanceInfoUser(ctx, id).Return(idResponce, balanceResponce, errors.New("{\"error\":\"User not found\"}\n"))
+			inputBody: `{"id":"99999999"}`,
+			inputUser: 99999999,
+			mockBehavior: func(r *mock_service.MockBalanceInfo, id int64) {
+				var uid int64 = 0
+				var balance float64 = 0
+				var err error = errors.New("{\"error\":\"User not found\"}\n")
+				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			expectedStatusCode:   400,
 			expectedResponseBody: "{\"error\":\"User not found\"}\n",
@@ -66,7 +68,7 @@ func TestHandler_BalanceInfo(t *testing.T) {
 			c := gomock.NewController(t)
 			defer c.Finish()
 
-			repo := service_mocks.NewMockBalanceInfoUser(c)
+			repo := mock_service.NewMockBalanceInfoUser(c)
 			test.mockBehavior(repo, test.inputUser)
 
 			services := &service.Service{BalanceInfo: repo}

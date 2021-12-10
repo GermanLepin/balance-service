@@ -33,14 +33,14 @@ func (h *Handler) UpBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, _, err := h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
+	err = h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		logrus.WithError(err).Errorf("User not found in database")
+		logrus.WithError(err).Errorf("User not found")
 		return
 	}
 
-	err = json.JSONUpBalance(w, id, correctAmount)
+	err = json.JSONUpBalance(w, userId, correctAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

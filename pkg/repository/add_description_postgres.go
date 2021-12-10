@@ -20,7 +20,7 @@ func (a *AddDescriptionPostgres) AddDescriptionDB(ctx context.Context, id int64,
 	_, err := a.db.Exec(ctx, "INSERT INTO description (created_at, description, sender_receiver, balance_at_moment, amount, refill, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
 		time.Now(), description, senderReceiver, balanceAtMoment, corectAmount, refill, id)
 	if err != nil {
-		logrus.WithError(err).Errorf("User not found in database")
+		logrus.WithError(err).Errorf("User not found")
 		return err
 	}
 

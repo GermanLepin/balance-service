@@ -11,12 +11,6 @@ test-integration:
 test.unit:
 	go test ./...
 
-# Первый запуск докера
-docker.first-start:
-	docker compose build
-	docker-compose up -d
-	docker-compose up -d
-
 # Запуск проекта
 docker.start:
 	docker-compose up -d
@@ -25,9 +19,6 @@ docker.start:
 # Остановка докера
 docker.stop:
 	docker-compose down
-
-# Перезапуск проекта
-docker.restart: docker.stop docker.start
 
 # Создание базы данных и таблиц
 create.all-tables: create-database create-users-table create-description-table

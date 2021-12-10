@@ -20,7 +20,7 @@ func (u *BalanceInfoPostgres) BalanceInfoDB(ctx context.Context, id int64) (int6
 	user := &tech_task.User{}
 	err := u.db.QueryRow(ctx, "SELECT id, balance FROM users WHERE id=$1;", id).Scan(&user.Id, &user.Balance)
 	if err != nil {
-		logrus.WithError(err).Errorf("User not found in database")
+		logrus.WithError(err).Errorf("User not found")
 		return 0, 0, err
 	}
 

@@ -41,8 +41,8 @@ func (g *GetAllUsersDescriptionsSortPostgres) GetAllUsersDescriptionsSortDB(ctx 
 	defer rows.Close()
 
 	if descriptions == nil {
-		logrus.Errorf("user not found in database")
-		return nil, errors.New("user not found in database")
+		logrus.Errorf("user not found")
+		return nil, errors.New("user not found")
 	}
 
 	return descriptions, nil
