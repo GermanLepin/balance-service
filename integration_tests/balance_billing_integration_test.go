@@ -21,7 +21,7 @@ func TestBalanceBillingSuite(t *testing.T) {
 	suite.Run(t, new(BalanceBillingSuite))
 }
 
-func (b *BalanceBillingSuite) TestIntegration_BalanceBiling() {
+func (b *BalanceBillingSuite) TestIntegration_BalanceBilling() {
 	tests := []struct {
 		name                 string
 		inputBody            string

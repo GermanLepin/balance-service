@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-var ServeAddress = "localhost:9000"
+const ServeAddress = "localhost:9000"
 
 type ErrorSuite struct {
 	suite.Suite
