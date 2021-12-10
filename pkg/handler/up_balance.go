@@ -36,7 +36,7 @@ func (h *Handler) UpBalance(w http.ResponseWriter, r *http.Request) {
 	err = h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		logrus.WithError(err).Errorf("User not found")
+		logrus.WithError(err).Errorf("user not found")
 		return
 	}
 

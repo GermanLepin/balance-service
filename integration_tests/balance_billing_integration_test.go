@@ -21,8 +21,6 @@ func TestBalanceBillingSuite(t *testing.T) {
 	suite.Run(t, new(BalanceBillingSuite))
 }
 
-var ServeAddress = "localhost:9000"
-
 func (b *BalanceBillingSuite) TestIntegration_BalanceBiling() {
 	tests := []struct {
 		name                 string

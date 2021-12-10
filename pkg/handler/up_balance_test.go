@@ -33,10 +33,8 @@ func TestHandler_UpBalance(t *testing.T) {
 			inputUser:   1,
 			inputAmount: 1569.77,
 			mockBehavior: func(r *mock_service.MockUpBalance, id int64, amount float64) {
-				var uid int64 = 1
-				var balance float64 = 1569.77
 				var err error = nil
-				r.EXPECT().UpBalanceUser(ctx, id, amount).Return(uid, balance, err)
+				r.EXPECT().UpBalanceUser(ctx, id, amount).Return(err)
 			},
 			expectedStatusCode:   200,
 			expectedResponseBody: "{\"user id\":1,\"top up an amount\":1569.77}\n",

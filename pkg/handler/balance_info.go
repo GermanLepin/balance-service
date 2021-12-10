@@ -54,7 +54,7 @@ func (h *Handler) BalanceInfo(w http.ResponseWriter, r *http.Request) {
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, "Invalid currency type, only USD")
-		logrus.Errorf("Invalid currency type, only USD")
+		logrus.Errorf("invalid currency type, only USD")
 		return
 	}
 }
