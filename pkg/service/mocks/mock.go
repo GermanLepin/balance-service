@@ -155,15 +155,15 @@ func (m *MockGetDescriptions) EXPECT() *MockGetDescriptionsMockRecorder {
 	return m.recorder
 }
 
-func (m *MockGetDescriptions) GetDescriptionsUsers(ctx context.Context, id int64, sortBy, orderBy, sqlOrderBy string) ([]tech_task.Description, error) {
+func (m *MockGetDescriptions) GetDescriptionsUsers(ctx context.Context, id int64, sortBy, orderBy string) ([]tech_task.Description, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetDescriptions", id, sortBy, orderBy, sqlOrderBy)
+	ret := m.ctrl.Call(m, "GetDescriptions", id, sortBy, orderBy)
 	ret0, _ := ret[0].([]tech_task.Description)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-func (mr *MockGetDescriptionsMockRecorder) GetDescriptionsUsers(ctx context.Context, id, sortBy, orderBy, sqlOrderBy interface{}) *gomock.Call {
+func (mr *MockGetDescriptionsMockRecorder) GetDescriptionsUsers(ctx context.Context, id, sortBy, orderBy interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDescriptions", reflect.TypeOf((*MockGetDescriptions)(nil).GetDescriptionsUsers), id, sortBy, orderBy, sqlOrderBy)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDescriptions", reflect.TypeOf((*MockGetDescriptions)(nil).GetDescriptionsUsers), id, sortBy, orderBy)
 }

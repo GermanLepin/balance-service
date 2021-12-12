@@ -11,6 +11,7 @@ import (
 )
 
 var (
+	asc            = "asc"
 	desc           = "desc"
 	description    = "description"
 	senderReceiver = "sender_receiver"

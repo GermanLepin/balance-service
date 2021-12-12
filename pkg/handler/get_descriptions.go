@@ -12,34 +12,40 @@ import (
 
 func (h *Handler) GetDescriptions(w http.ResponseWriter, r *http.Request) {
 	mapUser, _ := parse.ParsJSON(r)
-
 	userIdString := string(mapUser[id])
-	uid, err := validate.IdValidate(userIdString)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		return
+
+	var uid int64 = 0
+	if userIdString != "" {
+		userId, err := validate.IdValidate(userIdString)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.JSONError(w, err.Error())
+			return
+		}
+		uid = userId
 	}
 
 	sortBy := mapUser[sortBy]
 	if sortBy != nilValue && sortBy != data && sortBy != amount {
-		w.WriteHeader(http.StatusBadRequest)
-		logrus.Errorf("Sort value passed")
-		json.JSONError(w, "Sort value passed")
-		return
-	}
-
-	orderBy := mapUser[orderBy]
-	if orderBy != nilValue && orderBy != desc {
 		w.WriteHeader(http.StatusBadRequest)
 		logrus.Errorf("Incorrect parameter for sorting, can only be created_at or amount")
 		json.JSONError(w, "Incorrect parameter for sorting, can only be created_at or amount")
 		return
 	}
 
+	orderBy := mapUser[orderBy]
+	if orderBy != nilValue && orderBy != desc && orderBy != asc {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.Errorf("Incorrect parameter for order, can only be desc or asc")
+		json.JSONError(w, "Incorrect parameter for order, can only be desc or asc")
+		return
+	}
+
 	descriptionSlice, err := h.services.GetDescriptions.GetDescriptionsUsers(ctx, uid, sortBy, orderBy)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
+		w.WriteHeader(http.StatusBadRequest)
 		logrus.WithError(err).Errorf(err.Error())
+		json.JSONError(w, err.Error())
 		return
 	}
 
@@ -51,5 +57,4 @@ func (h *Handler) GetDescriptions(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-
 }

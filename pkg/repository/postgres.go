@@ -4,8 +4,10 @@ import (
 	"database/sql"
 	"fmt"
 	"net/url"
+	_ "tech_task/migrations"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/pressly/goose"
 )
 
 var (
@@ -31,10 +33,19 @@ func NewConnection(cfg *Config) (*sql.DB, error) {
 		cfg.DbName,
 		cfg.Timeout)
 
-	db, err := sql.Open(driver, connStr)
+	conn, err := sql.Open(driver, connStr)
 	if err != nil {
 		return nil, err
 	}
 
-	return db, nil
+	err = conn.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	if err := goose.Up(conn, "/var"); err != nil {
+		return nil, err
+	}
+
+	return conn, nil
 }

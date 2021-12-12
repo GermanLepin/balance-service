@@ -15,7 +15,8 @@
     make start-project
 
 Автоматически поднимается сервер и база данных
-Сервер вернет *Ping OK!* Это будет означать, что сервер запущен и коннект с базой данных установлен.
+Сервер вернет *Ping OK!* Это будет означать, что сервер запущен и коннект с базой данных установлен. 
+Также будет выполнена миграция по созданию таблиц users и descriptions.
 
 В основном для тестирования API я использую Postman или Insomnia.
 
@@ -131,6 +132,7 @@
     "balance": 117.98
   }
 ```
+(Ответ всегда будет разным, так как, к сожалению, или к счастью, курс валюты не константа)
 
 # Дополнительное задание 2:
 
@@ -144,11 +146,11 @@
 |amount| float64| сумма зачисления/списания средств на счет/с счета является положительным и может содержать только два значения после точки|
 |description | string| описание транзакции за что были списаны/зачислены средства |
 |sender_receiver | string| информация о откуда/куда были списаны/зачислены средства |
-|refill | string| при указании в этом поле T - означает, что было пополнение баланса пользователя, при указании F - означает, что было списание с баланса пользователя,|
+|refilll | string| при указании в этом поле T - означает, что было пополнение баланса пользователя, при указании F - означает, что было списание с баланса пользователя,|
 
 Добавление записи с описанием. POST метод.
 
-    localhost:9000/description/add  
+    localhost:9000/descriptions/add  
 
 *Добавить в тело запроса(JSON формат):*
 ```
@@ -157,7 +159,7 @@
     "amount": "6780",
     "description": "Покупка наушников",
     "sender_receiver": "Avito",
-    "refill": "T"
+    "refilll": "F"
   }
 ```
 
@@ -169,54 +171,11 @@
     "amount": 6780,
     "description of transaction": "Покупка наушников",
     "sender or receiver": "Avito",
-    "refill the balance": "T"
+    "refilll the balance": "F"
   }
 ```
 
-Получения всех записей по id определенного/определенных пользователя/пользователей. GET метод.
-
-    localhost:9000/description/get-user
-
-*Добавить в тело запроса(JSON формат):*
-```
-  {
-    "id": "1"
-  }
-```
-
-*Ответ запроса(JSON формат):*
-```
-  {
-    "Id": 1,
-    "SenderReceiver": "Avito",
-    "Amount": 6780,
-    "Description": "Покупка наушников",
-    "BalanceAtMoment": 1520,
-    "UserId": 1,
-    "CreatedAt": "2021-10-28T14:42:53.904609Z",
-    "Refil": "F"
-  }
-```
-
-Получения всех записей. GET метод.
-
-    localhost:9000/description/get-all
-
-*Ответ запроса(JSON формат):*
-```
-  {
-    "Id": 1,
-    "SenderReceiver": "Avito",
-    "Amount": 6780,
-    "Description": "Покупка наушников",
-    "BalanceAtMoment": 1520,
-    "UserId": 1,
-    "CreatedAt": "2021-10-28T14:42:53.904609Z",
-    "Refil": "F"
-  }
-```
-
-Для следующих методов нужно добавить несколько произвольных записей в БД. POST метод.
+Необходимо добавить несколько произвольных записей в БД. POST метод.
 
     localhost:9000/description/add  
 
@@ -227,7 +186,7 @@
     "amount": "5490",
     "description": "Продажа куртки",
     "sender_receiver": "Avito",
-    "refill": "T"
+    "refilll": "T"
   }
 ```
 
@@ -238,7 +197,7 @@
     "amount": "1270",
     "description": "Покупка книги",
     "sender_receiver": "Avito",
-    "refill": "F"
+    "refilll": "F"
   }
 ```
 
@@ -249,7 +208,7 @@
     "amount": "7490",
     "description": "Продажа зеркала",
     "sender_receiver": "Avito",
-    "refill": "T"
+    "refilll": "T"
   }
 ```
 
@@ -260,100 +219,128 @@
     "amount": "3270",
     "description": "Покупка крана",
     "sender_receiver": "Avito",
-    "refill": "F"
+    "refilll": "F"
   }
 ```
 
-Получения всех записей. GET метод.
+Получение описаний транзакцйий(description)
 
-    localhost:9000/description/get-all
+Параметры тела запроса:
+|Ключ| Тип данных| Описание| Признак |
+|---|---|---|---|
+|id | int64| является положительным уникальным идентификатором пользователя | Не обезательно |
+|sort_by | string| в данном параметре необходимо указать по какому полю провести сортировку, 
+  сейчас доступны два поля created_at(дата создания) и amount(сумма операции)| Не обезательно |
+|order_by | string| в данном поле необходимо указать в каком порядке необходимо сделать сортировку, по умолчанию всегда указан ASC(от меньшего к большему), можно указать desc(от большего к меньшему) | Не обезательно |
+
+Если тело JSON будет пыстым, то в ответ вернется список всех записей (description) отсортированный по дате создания описания, и в порядке от ранее созданного к более позднему.
+
+Получение всех записей (description). Метод GET.
+    
+    localhost:9000/descriptions/get
 
 *Ответ запроса(JSON формат):*
 ```
-{"Id":1,"SenderReceiver":"Avito","Amount":6780,"Description":"Покупка наушников","BalanceAtMoment":1520,"UserId":1,"CreatedAt":"2021-10-28T01:17:08.660784Z","Refil":"F"}
-{"Id":2,"SenderReceiver":"Avito","Amount":5490,"Description":"Продажа куртки","BalanceAtMoment":7010,"UserId":1,"CreatedAt":"2021-10-28T01:32:37.122076Z","Refil":"T"}
-{"Id":3,"SenderReceiver":"Avito","Amount":1270,"Description":"Покупка книги","BalanceAtMoment":5740,"UserId":1,"CreatedAt":"2021-10-28T01:32:46.778208Z","Refil":"F"}
-{"Id":4,"SenderReceiver":"Avito","Amount":7490,"Description":"Продажа зеркала","BalanceAtMoment":9190,"UserId":2,"CreatedAt":"2021-10-28T01:32:56.434473Z","Refil":"T"}
-{"Id":5,"SenderReceiver":"Avito","Amount":3270,"Description":"Покупка крана","BalanceAtMoment":5920,"UserId":2,"CreatedAt":"2021-10-28T01:33:08.176709Z","Refil":"F"}
+{"id":1,"sender receiver":"Avito","amount":6780,"description":"Покупка наушников","balance at moment":1520,"user id":1,"created at":"2021-10-28T01:17:08.660784Z","refill":"F"}
+{"id":2,"sender receiver":"Avito","amount":5490,"description":"Продажа куртки","balance at moment":7010,"user id":1,"created at":"2021-10-28T01:32:37.122076Z","refill":"T"}
+{"id":3,"sender receiver":"Avito","amount":1270,"description":"Покупка книги","balance at moment":5740,"user id":1,"created at":"2021-10-28T01:32:46.778208Z","refill":"F"}
+{"id":4,"sender receiver":"Avito","amount":7490,"description":"Продажа зеркала","balance at moment":9190,"user id":2,"created at":"2021-10-28T01:32:56.434473Z","refill":"T"}
+{"id":5,"sender receiver":"Avito","amount":3270,"description":"Покупка крана","balance at moment":5920,"user id":2,"created at":"2021-10-28T01:33:08.176709Z","refill":"F"}
 ```
 
-Предусмотрена сортировка по сумме и дате как и для какого-то конкретного/конкретных пользователя/пользователей, так и для всех пользователей, также есть способ сортировки от большего к меньшему(desc)
+Сортировка всех записей по полю (amount)сумма. Метод GET.
 
-Сортировка от меньшего к большему с указанием пользователя. Метод GET.
+    localhost:9000/descriptions/get
 
-    localhost:9000/description/get-user/sort_by
+*Добавить в тело запроса(JSON формат):*
+```
+  {
+    "sort_by":"amount"
+  }
+```
+
+*Ответ запроса(JSON формат):*
+```
+{"id":3,"sender receiver":"Avito","amount":1270,"description":"Покупка книги","balance at moment":5430,"user id":1,"created at":"2021-12-12T16:00:43.849871Z","refill":"F"}
+{"id":5,"sender receiver":"Avito","amount":3270,"description":"Покупка крана","balance at moment":3270,"user id":3,"created at":"2021-12-12T16:00:58.846923Z","refill":"T"}
+{"id":2,"sender receiver":"Avito","amount":5490,"description":"Продажа куртки","balance at moment":6700,"user id":1,"created at":"2021-12-12T16:00:32.103028Z","refill":"T"}
+{"id":1,"sender receiver":"Avito","amount":6780,"description":"Покупка наушников","balance at moment":1210,"user id":1,"created at":"2021-12-12T15:38:53.812268Z","refill":"F"}
+{"id":4,"sender receiver":"Avito","amount":7490,"description":"Продажа зеркала","balance at moment":9190,"user id":2,"created at":"2021-12-12T16:00:51.421637Z","refill":"T"}
+```
+
+Сортировка всех записей по полю (amount)сумма от большеего к меньшему. Метод GET.
+
+    localhost:9000/descriptions/get
+
+*Добавить в тело запроса(JSON формат):*
+```
+  {
+    "sort_by":"amount",
+	  "order_by":"desc"
+  }  
+```
+
+*Ответ запроса(JSON формат):*
+```
+{"id":4,"sender receiver":"Avito","amount":7490,"description":"Продажа зеркала","balance at moment":9190,"user id":2,"created at":"2021-12-12T16:00:51.421637Z","refill":"T"}
+{"id":1,"sender receiver":"Avito","amount":6780,"description":"Покупка наушников","balance at moment":1210,"user id":1,"created at":"2021-12-12T15:38:53.812268Z","refill":"F"}
+{"id":2,"sender receiver":"Avito","amount":5490,"description":"Продажа куртки","balance at moment":6700,"user id":1,"created at":"2021-12-12T16:00:32.103028Z","refill":"T"}
+{"id":5,"sender receiver":"Avito","amount":3270,"description":"Покупка крана","balance at moment":3270,"user id":3,"created at":"2021-12-12T16:00:58.846923Z","refill":"T"}
+{"id":3,"sender receiver":"Avito","amount":1270,"description":"Покупка книги","balance at moment":5430,"user id":1,"created at":"2021-12-12T16:00:43.849871Z","refill":"F"}
+```
+
+Получение записей определеного пользователя. GET метод.
+
+    localhost:9000/descriptions/get
+
+*Добавить в тело запроса(JSON формат):*
+```
+  {
+    "id": "1"
+  }
+```
+
+*Ответ запроса(JSON формат):*
+```
+{"id":1,"sender receiver":"Avito","amount":6780,"description":"Покупка наушников","balance at moment":1520,"user id":1,"created at":"2021-10-28T01:17:08.660784Z","refill":"F"}
+{"id":2,"sender receiver":"Avito","amount":5490,"description":"Продажа куртки","balance at moment":7010,"user id":1,"created at":"2021-10-28T01:32:37.122076Z","refill":"T"}
+{"id":3,"sender receiver":"Avito","amount":1270,"description":"Покупка книги","balance at moment":5740,"user id":1,"created at":"2021-10-28T01:32:46.778208Z","refill":"F"}
+```
+
+Получение записей определеного пользователя с сортировкой по полю amount(сумма). GET метод.
+
+    localhost:9000/descriptions/get
 
 *Добавить в тело запроса(JSON формат):*
 ```
   {
     "id": "1",
     "sort_by":"amount"
-  }  
+  }
 ```
 
 *Ответ запроса(JSON формат):*
 ```
-{"Id":3,"SenderReceiver":"Avito","Amount":1270,"Description":"Покупка книги","BalanceAtMoment":5740,"UserId":1,"CreatedAt":"2021-10-28T01:32:46.778208Z","Refil":"F"}
-{"Id":2,"SenderReceiver":"Avito","Amount":5490,"Description":"Продажа куртки","BalanceAtMoment":7010,"UserId":1,"CreatedAt":"2021-10-28T01:32:37.122076Z","Refil":"T"}
-{"Id":1,"SenderReceiver":"Avito","Amount":6780,"Description":"Покупка наушников","BalanceAtMoment":1520,"UserId":1,"CreatedAt":"2021-10-28T01:17:08.660784Z","Refil":"F"}
+{"id":3,"sender receiver":"Avito","amount":1270,"description":"Покупка книги","balance at moment":5740,"user id":1,"created at":"2021-10-28T01:32:46.778208Z","refill":"F"}
+{"id":2,"sender receiver":"Avito","amount":5490,"description":"Продажа куртки","balance at moment":7010,"user id":1,"created at":"2021-10-28T01:32:37.122076Z","refill":"T"}
+{"id":1,"sender receiver":"Avito","amount":6780,"description":"Покупка наушников","balance at moment":1520,"user id":1,"created at":"2021-10-28T01:17:08.660784Z","refill":"F"}
 ```
+Получение записей определеного пользователя. GET метод.
 
-Сортировка от большего к меньшему с указанием пользователя. Метод GET.
-
-    localhost:9000/description/get-user/sort_by/desc
+    localhost:9000/descriptions/get
 
 *Добавить в тело запроса(JSON формат):*
 ```
   {
     "id": "1",
-    "sort_by":"amount"
-  }  
+    "sort_by":"amount",
+    "order_by":"desc"
+  }
 ```
 
 *Ответ запроса(JSON формат):*
 ```
-{"Id":1,"SenderReceiver":"Avito","Amount":6780,"Description":"Покупка наушников","BalanceAtMoment":119,"UserId":1,"CreatedAt":"2021-10-25T04:42:53.904609Z","Refil":"F"}
-{"Id":4,"SenderReceiver":"Avito","Amount":4780,"Description":"Продажа зеркала","BalanceAtMoment":4899,"UserId":1,"CreatedAt":"2021-10-25T05:12:56.169917Z","Refil":"T"}
-{"Id":7,"SenderReceiver":"Avito","Amount":3510,"Description":"Покупка колонки","BalanceAtMoment":1389,"UserId":1,"CreatedAt":"2021-10-25T05:13:57.901295Z","Refil":"F"}
- ```
-
-Сортировка от меньшего к большему всех пользователя. Метод GET.
-
-    localhost:9000/description/get-all/sort_by   
-
-*Добавить в тело запроса(JSON формат):*
-```
-  {
-    "sort_by":"amount"
-  }  
-```
-
-*Ответ запроса(JSON формат):*
-```
-{"Id":3,"SenderReceiver":"Avito","Amount":1270,"Description":"Покупка книги","BalanceAtMoment":5740,"UserId":1,"CreatedAt":"2021-10-28T01:32:46.778208Z","Refil":"F"}
-{"Id":5,"SenderReceiver":"Avito","Amount":3270,"Description":"Покупка крана","BalanceAtMoment":5920,"UserId":2,"CreatedAt":"2021-10-28T01:33:08.176709Z","Refil":"F"}
-{"Id":2,"SenderReceiver":"Avito","Amount":5490,"Description":"Продажа куртки","BalanceAtMoment":7010,"UserId":1,"CreatedAt":"2021-10-28T01:32:37.122076Z","Refil":"T"}
-{"Id":1,"SenderReceiver":"Avito","Amount":6780,"Description":"Покупка наушников","BalanceAtMoment":1520,"UserId":1,"CreatedAt":"2021-10-28T01:17:08.660784Z","Refil":"F"}
-{"Id":4,"SenderReceiver":"Avito","Amount":7490,"Description":"Продажа зеркала","BalanceAtMoment":9190,"UserId":2,"CreatedAt":"2021-10-28T01:32:56.434473Z","Refil":"T"}
-```
-
-Сортировка от большего к меньшему всех пользователя. Метод GET.
-
-    localhost:9000/description/get-all
-
-*Добавить в тело запроса(JSON формат):*
-```
-  {
-    "sort_by":"amount"
-    "order_by":"desc
-  }  
-```
-
-*Ответ запроса(JSON формат):*
-```
-{"Id":4,"SenderReceiver":"Avito","Amount":7490,"Description":"Продажа зеркала","BalanceAtMoment":9190,"UserId":2,"CreatedAt":"2021-10-28T01:32:56.434473Z","Refil":"T"}
-{"Id":1,"SenderReceiver":"Avito","Amount":6780,"Description":"Покупка наушников","BalanceAtMoment":1520,"UserId":1,"CreatedAt":"2021-10-28T01:17:08.660784Z","Refil":"F"}
-{"Id":2,"SenderReceiver":"Avito","Amount":5490,"Description":"Продажа куртки","BalanceAtMoment":7010,"UserId":1,"CreatedAt":"2021-10-28T01:32:37.122076Z","Refil":"T"}
-{"Id":5,"SenderReceiver":"Avito","Amount":3270,"Description":"Покупка крана","BalanceAtMoment":5920,"UserId":2,"CreatedAt":"2021-10-28T01:33:08.176709Z","Refil":"F"}
-{"Id":3,"SenderReceiver":"Avito","Amount":1270,"Description":"Покупка книги","BalanceAtMoment":5740,"UserId":1,"CreatedAt":"2021-10-28T01:32:46.778208Z","Refil":"F"}
+{"id":1,"sender receiver":"Avito","amount":6780,"description":"Покупка наушников","balance at moment":1520,"user id":1,"created at":"2021-10-28T01:17:08.660784Z","refill":"F"}
+{"id":2,"sender receiver":"Avito","amount":5490,"description":"Продажа куртки","balance at moment":7010,"user id":1,"created at":"2021-10-28T01:32:37.122076Z","refill":"T"}
+{"id":3,"sender receiver":"Avito","amount":1270,"description":"Покупка книги","balance at moment":5740,"user id":1,"created at":"2021-10-28T01:32:46.778208Z","refill":"F"}
 ```

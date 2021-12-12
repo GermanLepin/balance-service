@@ -31,44 +31,39 @@ func TestHandler_AddDescription(t *testing.T) {
 		refill                     string
 		description                string
 		senderReceiver             string
+		mockBehaviorUpBalance      mockBehaviorUpBalance
 		mockBehaviorBalanceInfo    mockBehaviorBalanceInfo
 		mockBehaviorWritingOff     mockBehaviorWritingOff
-		mockBehaviorUpBalance      mockBehaviorUpBalance
 		mockBehaviorAddDescription mockBehaviorAddDescription
 		expectedStatusCode         int
 		expectedResponseBody       string
 	}{
 		{
-			name:           "Ok",
-			inputBody:      `{"id": "1","amount": "3680","description": "Покупка наушников","sender_receiver": "Avito","refill": "F"}`,
+			name:           "Add desciption refill true",
+			inputBody:      `{"id": "1","amount": "3680","description": "Покупка наушников","sender_receiver": "Avito","refill": "T"}`,
 			inputUser:      1,
-			balance:        10839.55,
+			balance:        1085.55,
 			inputAmount:    3680,
-			refill:         "F",
+			refill:         "T",
 			description:    "Покупка наушников",
 			senderReceiver: "Avito",
-			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
-				var uid int64 = 1
-				var balance float64 = 10839.55
-				var err error = nil
-				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
-			},
-			mockBehaviorWritingOff: func(r *mock_service.MockWritingOff, id int64, amount float64) {
-				var uid int64 = 1
-				var respAmount float64 = 3680
-				var err error = nil
-				r.EXPECT().WritingOffUser(ctx, id, amount).Return(uid, respAmount, err)
-			},
 			mockBehaviorUpBalance: func(r *mock_service.MockUpBalance, id int64, amount float64) {
 				var err error = nil
 				r.EXPECT().UpBalanceUser(ctx, id, amount).Return(err)
 			},
+			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
+				var uid int64 = 1
+				var balance float64 = 1085.55
+				var err error = nil
+				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
+			},
+			mockBehaviorWritingOff: func(r *mock_service.MockWritingOff, id int64, amount float64) {},
 			mockBehaviorAddDescription: func(r *mock_service.MockAddDescription, id int64, balanceAtMoment, corectAmount float64, refill, description, senderReceiver string) {
 				var err error = nil
 				r.EXPECT().AddDescriptionUser(ctx, id, balanceAtMoment, corectAmount, refill, description, senderReceiver).Return(err)
 			},
 			expectedStatusCode:   200,
-			expectedResponseBody: "{\"user id\":1,\"balance at moment\":1839.55,\"amount\":3680,\"description of transaction\":\"Покупка наушников\",\"sender or receiver\":\"Avito\",\"refill the balance\":\"F\"}\n",
+			expectedResponseBody: "{\"user id\":1,\"balance at moment\":1085.55,\"amount\":3680,\"description of transaction\":\"Покупка наушников\",\"sender or receiver\":\"Avito\",\"refill the balance\":\"T\"}\n",
 		},
 		{
 			name:           "Wrong input user",

@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"tech_task"
 
 	sq "github.com/Masterminds/squirrel"
@@ -32,24 +31,20 @@ func (gp *GetDescriptionsPostgres) GetDescriptionsDB(ctx context.Context, uid in
 		created_at,
 		refill
 		`).
-		From("description")
+		From("descriptions")
 
 	if uid != 0 {
-		baseQuery = baseQuery.Where(sq.Eq{"user_id": uid})
+		baseQuery = baseQuery.Where("user_id = $1", uid)
 	}
 
 	switch {
-	case sortBy != "" && orderBy != "":
-		params := fmt.Sprintf(sortBy + " " + orderBy)
-		baseQuery = baseQuery.OrderBy(params)
+	case sortBy != "" && orderBy == "desc":
+		baseQuery = baseQuery.OrderBy(sortBy + " " + orderBy)
 	case sortBy != "":
-		params := fmt.Sprintf(sortBy + " ASC")
-		baseQuery = baseQuery.OrderBy(params)
+		baseQuery = baseQuery.OrderBy(sortBy + " ASC")
 	default:
 		baseQuery = baseQuery.OrderBy("created_at ASC")
 	}
-
-
 
 	rows, err := baseQuery.RunWith(gp.db).QueryContext(ctx)
 	if err != nil {
@@ -66,7 +61,7 @@ func (gp *GetDescriptionsPostgres) GetDescriptionsDB(ctx context.Context, uid in
 			&description.BalanceAtMoment,
 			&description.UserId,
 			&description.CreatedAt,
-			&description.Refil)
+			&description.Refill)
 		descriptions = append(descriptions, description)
 	}
 	defer rows.Close()

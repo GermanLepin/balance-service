@@ -25,7 +25,7 @@ func (h *Handler) InitRoutes() http.Handler {
 		r.Patch("/user-to-user", h.U2U)
 	})
 
-	router.Route("/description", func(r chi.Router) {
+	router.Route("/descriptions", func(r chi.Router) {
 		r.Post("/add", h.AddDescription)
 		r.Get("/get", h.GetDescriptions)
 	})

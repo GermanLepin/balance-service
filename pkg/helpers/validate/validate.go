@@ -11,11 +11,11 @@ import (
 func IdValidate(idAccount string) (int64, error) {
 	id, err := strconv.ParseInt(idAccount, 0, 64)
 	if err != nil {
-		log.WithError(err).Errorf("Error with parcing id")
+		log.WithError(err).Errorf("error with parcing id")
 		return 0, errors.New("error with parcing id")
 	}
 	if id < 1 {
-		log.Errorf("Incorrect value id user")
+		log.Errorf("incorrect value id user")
 		return 0, errors.New("incorrect value id user")
 	}
 

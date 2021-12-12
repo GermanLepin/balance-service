@@ -23,12 +23,12 @@ func ParsJSON(r *http.Request) (map[string]string, error) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		logrus.WithError(err).Errorf("Error parcing request")
+		logrus.WithError(err).Errorf("error parcing request")
 		return nil, errors.New("error with parcing id")
 	}
 
 	if err := json.Unmarshal(body, &mapUser); err != nil {
-		logrus.WithError(err).Errorf("Error parcing JSON")
+		logrus.WithError(err).Errorf("error parcing JSON")
 		return nil, errors.New("error parcing JSON")
 	}
 
