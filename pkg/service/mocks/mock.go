@@ -3,6 +3,7 @@ package mock_service
 import (
 	"context"
 	"reflect"
+	"tech_task"
 
 	"github.com/golang/mock/gomock"
 )
@@ -102,4 +103,67 @@ func (m *MockWritingOff) WritingOffUser(ctx context.Context, id int64, amount fl
 func (mr *MockWritingOffMockRecorder) WritingOffUser(ctx context.Context, id, amount interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WritingOff", reflect.TypeOf((*MockWritingOff)(nil).WritingOffUser), id, amount)
+}
+
+type MockAddDescription struct {
+	ctrl     *gomock.Controller
+	recorder *MockAddDescriptionMockRecorder
+}
+
+type MockAddDescriptionMockRecorder struct {
+	mock *MockAddDescription
+}
+
+func NewMockAddDescriptionUser(ctrl *gomock.Controller) *MockAddDescription {
+	mock := &MockAddDescription{ctrl: ctrl}
+	mock.recorder = &MockAddDescriptionMockRecorder{mock}
+	return mock
+}
+
+func (m *MockAddDescription) EXPECT() *MockAddDescriptionMockRecorder {
+	return m.recorder
+}
+
+func (m *MockAddDescription) AddDescriptionUser(ctx context.Context, id int64, balanceAtMoment, corectAmount float64, refill, description, senderReceiver string) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddDescription", id, balanceAtMoment, corectAmount, refill, description, senderReceiver)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+func (mr *MockAddDescriptionMockRecorder) AddDescriptionUser(ctx context.Context, id, balanceAtMoment, corectAmount, refill, description, senderReceiver interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddDescription", reflect.TypeOf((*MockAddDescription)(nil).AddDescriptionUser), id, balanceAtMoment, corectAmount, refill, description, senderReceiver)
+}
+
+type MockGetDescriptions struct {
+	ctrl     *gomock.Controller
+	recorder *MockGetDescriptionsMockRecorder
+}
+
+type MockGetDescriptionsMockRecorder struct {
+	mock *MockGetDescriptions
+}
+
+func NewMocketGetDescriptions(ctrl *gomock.Controller) *MockGetDescriptions {
+	mock := &MockGetDescriptions{ctrl: ctrl}
+	mock.recorder = &MockGetDescriptionsMockRecorder{mock}
+	return mock
+}
+
+func (m *MockGetDescriptions) EXPECT() *MockGetDescriptionsMockRecorder {
+	return m.recorder
+}
+
+func (m *MockGetDescriptions) GetDescriptionsUsers(ctx context.Context, id int64, sortBy, orderBy, sqlOrderBy string) ([]tech_task.Description, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetDescriptions", id, sortBy, orderBy, sqlOrderBy)
+	ret0, _ := ret[0].([]tech_task.Description)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (mr *MockGetDescriptionsMockRecorder) GetDescriptionsUsers(ctx context.Context, id, sortBy, orderBy, sqlOrderBy interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetDescriptions", reflect.TypeOf((*MockGetDescriptions)(nil).GetDescriptionsUsers), id, sortBy, orderBy, sqlOrderBy)
 }

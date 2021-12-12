@@ -1,11 +1,15 @@
 package repository
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
 	"net/url"
 
-	"github.com/jackc/pgx/v4/pgxpool"
+	_ "github.com/jackc/pgx/v4/stdlib"
+)
+
+var (
+	driver = "pgx"
 )
 
 type Config struct {
@@ -17,7 +21,7 @@ type Config struct {
 	Timeout  int
 }
 
-func NewPoolConfig(cfg *Config) (*pgxpool.Config, error) {
+func NewConnection(cfg *Config) (*sql.DB, error) {
 	connStr := fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=disable&connect_timeout=%d",
 		"postgres",
 		url.QueryEscape(cfg.Username),
@@ -27,19 +31,10 @@ func NewPoolConfig(cfg *Config) (*pgxpool.Config, error) {
 		cfg.DbName,
 		cfg.Timeout)
 
-	poolConfig, err := pgxpool.ParseConfig(connStr)
+	db, err := sql.Open(driver, connStr)
 	if err != nil {
 		return nil, err
 	}
 
-	return poolConfig, nil
-}
-
-func NewConnection(poolConfig *pgxpool.Config) (*pgxpool.Pool, error) {
-	conn, err := pgxpool.ConnectConfig(context.Background(), poolConfig)
-	if err != nil {
-		return nil, err
-	}
-
-	return conn, nil
+	return db, nil
 }

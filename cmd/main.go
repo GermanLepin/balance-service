@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
 	"tech_task"
 
-	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
@@ -58,7 +58,7 @@ func initConfig() error {
 
 }
 
-func StartDB() (*pgxpool.Pool, error) {
+func StartDB() (*sql.DB, error) {
 	cfg := &repository.Config{}
 
 	if len(os.Getenv("POSTGRES_HOST")) == 0 {
@@ -88,21 +88,13 @@ func StartDB() (*pgxpool.Pool, error) {
 	cfg.Port = "54320"
 	cfg.Timeout = 5
 
-	poolConfig, err := repository.NewPoolConfig(cfg)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Pool config error: %v\n", err)
-		os.Exit(1)
-	}
-
-	poolConfig.MaxConns = 20
-
-	c, err := repository.NewConnection(poolConfig)
+	c, err := repository.NewConnection(cfg)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Connect to database failed: %v\n", err)
 		os.Exit(1)
 	}
 
-	_, err = c.Exec(context.Background(), ";")
+	_, err = c.Exec(";")
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Ping failed: %v\n", err)
 		os.Exit(1)

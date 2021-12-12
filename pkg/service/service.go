@@ -22,12 +22,8 @@ type AddDescription interface {
 	AddDescriptionUser(context.Context, int64, float64, float64, string, string, string) error
 }
 
-type GetAllUsersDescriptionsSort interface {
-	GetAllDescriptionsSort(context.Context, string, string, string) ([]tech_task.Description, error)
-}
-
-type GetUserIdDescriptionsSort interface {
-	GetUserIdDescriptionsSort(context.Context, int64, string, string, string) ([]tech_task.Description, error)
+type GetDescriptions interface {
+	GetDescriptionsUsers(context.Context, int64, string, string) ([]tech_task.Description, error)
 }
 
 type Service struct {
@@ -35,17 +31,15 @@ type Service struct {
 	BalanceInfo
 	WritingOff
 	AddDescription
-	GetAllUsersDescriptionsSort
-	GetUserIdDescriptionsSort
+	GetDescriptions
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		UpBalance:                   NewUpBalanceService(repos.UpBalance),
-		BalanceInfo:                 NewBalanceInfoService(repos.BalanceInfo),
-		WritingOff:                  NewWritingOffService(repos.WritingOff),
-		AddDescription:              NewAddDescriptionService(repos.AddDescription),
-		GetAllUsersDescriptionsSort: NewGetAllUsersDescriptionsSortService(repos.GetAllUsersDescriptionsSort),
-		GetUserIdDescriptionsSort:   NewGetUserIdDescriptionsSortServiceService(repos.GetUserIdDescriptionsSort),
+		UpBalance:       NewUpBalanceService(repos.UpBalance),
+		BalanceInfo:     NewBalanceInfoService(repos.BalanceInfo),
+		WritingOff:      NewWritingOffService(repos.WritingOff),
+		AddDescription:  NewAddDescriptionService(repos.AddDescription),
+		GetDescriptions: NewGetDescriptionsService(repos.GetDescriptions),
 	}
 }

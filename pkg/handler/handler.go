@@ -27,8 +27,7 @@ func (h *Handler) InitRoutes() http.Handler {
 
 	router.Route("/description", func(r chi.Router) {
 		r.Post("/add", h.AddDescription)
-		r.Get("/get-user", h.GetUserIdDescriptionsSort)
-		r.Get("/get-all", h.GetAllUsersDescriptionsSort)
+		r.Get("/get", h.GetDescriptions)
 	})
 
 	return router

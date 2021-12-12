@@ -2,9 +2,8 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"tech_task"
-
-	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 type UpBalance interface {
@@ -23,12 +22,8 @@ type AddDescription interface {
 	AddDescriptionDB(context.Context, int64, float64, float64, string, string, string) error
 }
 
-type GetAllUsersDescriptionsSort interface {
-	GetAllUsersDescriptionsSortDB(context.Context, string, string, string) ([]tech_task.Description, error)
-}
-
-type GetUserIdDescriptionsSort interface {
-	GetUserIdDescriptionsSortDB(context.Context, int64, string, string, string) ([]tech_task.Description, error)
+type GetDescriptions interface {
+	GetDescriptionsDB(context.Context, int64, string, string) ([]tech_task.Description, error)
 }
 
 type Repository struct {
@@ -36,17 +31,15 @@ type Repository struct {
 	BalanceInfo
 	WritingOff
 	AddDescription
-	GetAllUsersDescriptionsSort
-	GetUserIdDescriptionsSort
+	GetDescriptions
 }
 
-func NewRepository(db *pgxpool.Pool) *Repository {
+func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
-		UpBalance:                   NewUpBalancePostgres(db),
-		BalanceInfo:                 NewBalanceInfoPostgres(db),
-		WritingOff:                  NewWritingOffPostgres(db),
-		AddDescription:              NewAddDescriptionPostgres(db),
-		GetAllUsersDescriptionsSort: NewGetAllUsersDescriptionsSortPostgres(db),
-		GetUserIdDescriptionsSort:   NewGetUserIdDescriptionsPostgres(db),
+		UpBalance:       NewUpBalancePostgres(db),
+		BalanceInfo:     NewBalanceInfoPostgres(db),
+		WritingOff:      NewWritingOffPostgres(db),
+		AddDescription:  NewAddDescriptionPostgres(db),
+		GetDescriptions: NewGetDescriptionsPostgres(db),
 	}
 }

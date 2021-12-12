@@ -1,5 +1,5 @@
 # Первый запуск проекта
-start-project: docker.first-start create.all-tables 
+start-project: docker.start create.all-tables 
 
 # Запуск интеграционных тестов
 docker.test.integration: start-project test-integration docker.stop
@@ -13,7 +13,7 @@ test.unit:
 
 # Запуск проекта
 docker.start:
-	docker-compose up -d
+	docker compose build
 	docker-compose up -d
 
 # Остановка докера

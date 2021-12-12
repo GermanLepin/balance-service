@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	asc            = "asc"
 	desc           = "desc"
 	description    = "description"
 	senderReceiver = "sender_receiver"
@@ -23,7 +22,6 @@ var (
 	amount         = "amount"
 	sortBy         = "sort_by"
 	orderBy        = "order_by"
-	sqlOrderBy     = "ORDER BY"
 	ctx            = context.Background()
 	id             = "id"
 	id1            = "id1"
@@ -49,11 +47,7 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	description := string(mapUser[description])
-	senderReceiver := string(mapUser[senderReceiver])
 	userIdString := string(mapUser[id])
-	amountString := string(mapUser[amount])
-
 	userId, err := validate.IdValidate(userIdString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -61,12 +55,16 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	amountString := string(mapUser[amount])
 	correctAmount, err := validate.AmountValidate(amountString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, err.Error())
 		return
 	}
+
+	description := string(mapUser[description])
+	senderReceiver := string(mapUser[senderReceiver])
 
 	switch refill {
 	case TRUE:
