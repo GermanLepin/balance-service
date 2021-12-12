@@ -11,7 +11,6 @@ func init() {
 }
 
 func upInit(tx *sql.Tx) error {
-	// This code is executed when the migration is applied.
 	_, err := tx.Exec(`
 	CREATE TABLE IF NOT EXISTS users(
 		id      INTEGER NOT NULL PRIMARY KEY,
@@ -35,7 +34,6 @@ func upInit(tx *sql.Tx) error {
 }
 
 func downInit(tx *sql.Tx) error {
-	// This code is executed when the migration is rolled back.
 	_, err := tx.Exec(`
 	DROP TABLE IF EXISTS users;
 	DROP TABLE IF EXISTS descriptions;`)

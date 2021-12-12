@@ -1,0 +1,1 @@
+CREATE DATABASE avito_db;

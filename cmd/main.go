@@ -80,7 +80,7 @@ func StartDB() (*sql.DB, error) {
 	}
 
 	if len(os.Getenv("POSTGRES_DB")) == 0 {
-		cfg.DbName = "avito_users_db"
+		cfg.DbName = "avito_db"
 	} else {
 		cfg.DbName = os.Getenv("POSTGRES_DB")
 	}
