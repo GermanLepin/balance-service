@@ -8,7 +8,7 @@
 
 Клонируйте репозиторий с помощью git
 
-    https://github.com/GermanLepin/Tech_task.git
+    git clone https://github.com/GermanLepin/tech_task.git
 
 Запуск проекта:
 
