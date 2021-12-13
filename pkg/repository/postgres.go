@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	_ "tech_task/migrations"
+	"time"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/pressly/goose"
@@ -37,6 +38,11 @@ func NewConnection(cfg *Config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer conn.Close()
+
+	conn.SetMaxOpenConns(25)
+	conn.SetMaxIdleConns(25)
+	conn.SetConnMaxLifetime(5 * time.Minute)
 
 	err = conn.Ping()
 	if err != nil {

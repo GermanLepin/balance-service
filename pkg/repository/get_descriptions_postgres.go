@@ -64,7 +64,6 @@ func (gp *GetDescriptionsPostgres) GetDescriptionsDB(ctx context.Context, uid in
 			&description.Refill)
 		descriptions = append(descriptions, description)
 	}
-	defer rows.Close()
 
 	if descriptions == nil {
 		logrus.Errorf("user not found")

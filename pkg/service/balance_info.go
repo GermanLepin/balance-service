@@ -7,8 +7,8 @@ import (
 )
 
 type BalanceInfoService struct {
-	repo repository.BalanceInfo
 	mu   sync.Mutex
+	repo repository.BalanceInfo
 }
 
 func NewBalanceInfoService(repo repository.BalanceInfo) *BalanceInfoService {

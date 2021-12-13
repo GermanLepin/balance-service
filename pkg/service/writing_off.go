@@ -7,8 +7,8 @@ import (
 )
 
 type WritingOffService struct {
-	repo repository.WritingOff
 	mu   sync.Mutex
+	repo repository.WritingOff
 }
 
 func NewWritingOffService(repo repository.WritingOff) *WritingOffService {
