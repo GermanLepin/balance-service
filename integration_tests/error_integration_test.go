@@ -33,7 +33,7 @@ func (b *ErrorSuite) TestIntegration_ErrorIntegration() {
 		expectedResponseBody string
 	}{
 		{
-			name:                 "ErrorUserId",
+			name:                 "ErrorUserID",
 			inputBody:            `{"id":"-111111","amount":"1000.55"}`,
 			http:                 http.MethodPost,
 			url:                  fmt.Sprintf("http://%s/up-balance", ServeAddress),

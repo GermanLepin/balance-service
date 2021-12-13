@@ -14,6 +14,6 @@ func NewGetDescriptionsService(repo repository.GetDescriptions) *GetDescriptions
 	return &GetDescriptionsService{repo: repo}
 }
 
-func (g *GetDescriptionsService) GetDescriptionsUsers(ctx context.Context, id int64, sortBy, orderBy string) ([]tech_task.Description, error) {
+func (g *GetDescriptionsService) GetDescriptionsUsers(ctx context.Context, id int64, sortBy, orderBy string) (descriptionsList []tech_task.Description, err error) {
 	return g.repo.GetDescriptionsDB(ctx, id, sortBy, orderBy)
 }

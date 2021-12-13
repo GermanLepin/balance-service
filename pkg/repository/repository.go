@@ -7,23 +7,23 @@ import (
 )
 
 type UpBalance interface {
-	UpBalanceDB(context.Context, int64, float64) error
+	UpBalanceDB(ctx context.Context, uid int64, amount float64) error
 }
 
 type BalanceInfo interface {
-	BalanceInfoDB(context.Context, int64) (int64, float64, error)
+	BalanceInfoDB(ctx context.Context, uid int64) (userID int64, balance float64, err error)
 }
 
 type WritingOff interface {
-	WritingOffDB(context.Context, int64, float64) (int64, float64, error)
+	WritingOffDB(ctx context.Context, uid int64, amount float64) (userID int64, amountWritingOff float64, err error)
 }
 
 type AddDescription interface {
-	AddDescriptionDB(context.Context, int64, float64, float64, string, string, string) error
+	AddDescriptionDB(ctx context.Context, uid int64, balanceAtMoment float64, correctAmount float64, refill string, description string, senderReceiver string) error
 }
 
 type GetDescriptions interface {
-	GetDescriptionsDB(context.Context, int64, string, string) ([]tech_task.Description, error)
+	GetDescriptionsDB(ctx context.Context, uid int64, sortBy string, orderBy string) (descriptionsList []tech_task.Description, err error)
 }
 
 type Repository struct {

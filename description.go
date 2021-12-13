@@ -8,7 +8,7 @@ type Description struct {
 	Amount          float64   `json:"amount"`
 	Description     string    `json:"description"`
 	BalanceAtMoment float64   `json:"balance at moment"`
-	UserId          int64     `json:"user id"`
+	UserID          int64     `json:"user id"`
 	CreatedAt       time.Time `json:"created at"`
 	Refill          string    `json:"refill"`
 }

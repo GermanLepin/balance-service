@@ -16,7 +16,7 @@ docker.build:
 # Старт докер
 docker.start:
 	docker-compose up -d 
-	docker-compose up -d 
+	docker-compose up -d
 
 # Остановка докера
 docker.stop:

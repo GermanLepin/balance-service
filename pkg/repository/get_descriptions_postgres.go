@@ -18,7 +18,7 @@ func NewGetDescriptionsPostgres(db *sql.DB) *GetDescriptionsPostgres {
 	return &GetDescriptionsPostgres{db: db}
 }
 
-func (gp *GetDescriptionsPostgres) GetDescriptionsDB(ctx context.Context, uid int64, sortBy, orderBy string) ([]tech_task.Description, error) {
+func (gp *GetDescriptionsPostgres) GetDescriptionsDB(ctx context.Context, uid int64, sortBy, orderBy string) (descriptionsList []tech_task.Description, err error) {
 	var descriptions []tech_task.Description
 
 	baseQuery := sq.Select(`
@@ -59,7 +59,7 @@ func (gp *GetDescriptionsPostgres) GetDescriptionsDB(ctx context.Context, uid in
 			&description.Amount,
 			&description.Description,
 			&description.BalanceAtMoment,
-			&description.UserId,
+			&description.UserID,
 			&description.CreatedAt,
 			&description.Refill)
 		descriptions = append(descriptions, description)

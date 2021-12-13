@@ -16,7 +16,7 @@ func NewUpBalancePostgres(db *sql.DB) *UpBalancePostgres {
 
 func (u *UpBalancePostgres) UpBalanceDB(ctx context.Context, id int64, amount float64) error {
 	user := &tech_task.User{}
-	userErr := u.db.QueryRow("SELECT id, balance FROM users WHERE id=$1;", id).Scan(&user.Id, &user.Balance)
+	userErr := u.db.QueryRow("SELECT id, balance FROM users WHERE id=$1;", id).Scan(&user.ID, &user.Balance)
 	if userErr != nil {
 		_, err := u.db.Exec("INSERT INTO users (id, balance) VALUES ($1, $2)", id, amount)
 		if err != nil {

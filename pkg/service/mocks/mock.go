@@ -27,18 +27,18 @@ func (m *MockBalanceInfo) EXPECT() *MockBalanceInfoMockRecorder {
 	return m.recorder
 }
 
-func (m *MockBalanceInfo) BalanceInfoUser(ctx context.Context, id int64) (int64, float64, error) {
+func (m *MockBalanceInfo) BalanceInfoUser(ctx context.Context, uid int64) (userID int64, balance float64, err error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BalanceInfo", id)
+	ret := m.ctrl.Call(m, "BalanceInfo", uid)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(float64)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-func (mr *MockBalanceInfoMockRecorder) BalanceInfoUser(ctx context.Context, id interface{}) *gomock.Call {
+func (mr *MockBalanceInfoMockRecorder) BalanceInfoUser(ctx context.Context, uid interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BalanceInfo", reflect.TypeOf((*MockBalanceInfo)(nil).BalanceInfoUser), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BalanceInfo", reflect.TypeOf((*MockBalanceInfo)(nil).BalanceInfoUser), uid)
 }
 
 type MockUpBalance struct {
@@ -60,16 +60,16 @@ func (m *MockUpBalance) EXPECT() *MockUpBalanceMockRecorder {
 	return m.recorder
 }
 
-func (m *MockUpBalance) UpBalanceUser(ctx context.Context, id int64, amount float64) error {
+func (m *MockUpBalance) UpBalanceUser(ctx context.Context, uid int64, amount float64) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpBalance", id, amount)
+	ret := m.ctrl.Call(m, "UpBalance", uid, amount)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-func (mr *MockUpBalanceMockRecorder) UpBalanceUser(ctx context.Context, id, amount interface{}) *gomock.Call {
+func (mr *MockUpBalanceMockRecorder) UpBalanceUser(ctx context.Context, uid, amount interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpBalance", reflect.TypeOf((*MockUpBalance)(nil).UpBalanceUser), id, amount)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpBalance", reflect.TypeOf((*MockUpBalance)(nil).UpBalanceUser), uid, amount)
 }
 
 type MockWritingOff struct {
@@ -91,18 +91,18 @@ func (m *MockWritingOff) EXPECT() *MockWritingOffMockRecorder {
 	return m.recorder
 }
 
-func (m *MockWritingOff) WritingOffUser(ctx context.Context, id int64, amount float64) (int64, float64, error) {
+func (m *MockWritingOff) WritingOffUser(ctx context.Context, uid int64, amount float64) (userID int64, amountWritingOff float64, err error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WritingOff", id, amount)
+	ret := m.ctrl.Call(m, "WritingOff", uid, amount)
 	ret0, _ := ret[0].(int64)
 	ret1, _ := ret[1].(float64)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-func (mr *MockWritingOffMockRecorder) WritingOffUser(ctx context.Context, id, amount interface{}) *gomock.Call {
+func (mr *MockWritingOffMockRecorder) WritingOffUser(ctx context.Context, uid, amount interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WritingOff", reflect.TypeOf((*MockWritingOff)(nil).WritingOffUser), id, amount)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WritingOff", reflect.TypeOf((*MockWritingOff)(nil).WritingOffUser), uid, amount)
 }
 
 type MockAddDescription struct {
@@ -155,7 +155,7 @@ func (m *MockGetDescriptions) EXPECT() *MockGetDescriptionsMockRecorder {
 	return m.recorder
 }
 
-func (m *MockGetDescriptions) GetDescriptionsUsers(ctx context.Context, id int64, sortBy, orderBy string) ([]tech_task.Description, error) {
+func (m *MockGetDescriptions) GetDescriptionsUsers(ctx context.Context, id int64, sortBy, orderBy string) (descriptionsList []tech_task.Description, err error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetDescriptions", id, sortBy, orderBy)
 	ret0, _ := ret[0].([]tech_task.Description)

@@ -48,8 +48,8 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIdString := string(mapUser[id])
-	userId, err := validate.IdValidate(userIdString)
+	userIDString := string(mapUser[id])
+	userID, err := validate.IdValidate(userIDString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, err.Error())
@@ -69,14 +69,14 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 
 	switch refill {
 	case TRUE:
-		err := h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
+		err := h.services.UpBalance.UpBalanceUser(ctx, userID, correctAmount)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.JSONError(w, "User not found")
 			return
 		}
 	case FALSE:
-		userId, balance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId)
+		userID, balance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userID)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.JSONError(w, "User not found")
@@ -90,24 +90,24 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		h.services.WritingOff.WritingOffUser(ctx, userId, correctAmount)
+		h.services.WritingOff.WritingOffUser(ctx, userID, correctAmount)
 	}
 
-	userId, balanceAtMoment, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId)
+	userID, balanceAtMoment, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, "User not found")
 		return
 	}
 
-	err = h.services.AddDescription.AddDescriptionUser(ctx, userId, balanceAtMoment, correctAmount, refill, description, senderReceiver)
+	err = h.services.AddDescription.AddDescriptionUser(ctx, userID, balanceAtMoment, correctAmount, refill, description, senderReceiver)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, "User not found")
 		return
 	}
 
-	err = json.JSONUAddDescription(w, userId, balanceAtMoment, correctAmount, refill, description, senderReceiver)
+	err = json.JSONUAddDescription(w, userID, balanceAtMoment, correctAmount, refill, description, senderReceiver)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

@@ -16,10 +16,10 @@ func (h *Handler) UpBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIdString := string(mapUser[id])
+	userIDString := string(mapUser[id])
 	amountString := string(mapUser[amount])
 
-	userId, err := validate.IdValidate(userIdString)
+	userID, err := validate.IdValidate(userIDString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, err.Error())
@@ -33,14 +33,14 @@ func (h *Handler) UpBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.services.UpBalance.UpBalanceUser(ctx, userId, correctAmount)
+	err = h.services.UpBalance.UpBalanceUser(ctx, userID, correctAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		logrus.WithError(err).Errorf("user not found")
 		return
 	}
 
-	err = json.JSONUpBalance(w, userId, correctAmount)
+	err = json.JSONUpBalance(w, userID, correctAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

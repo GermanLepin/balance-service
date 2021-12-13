@@ -16,10 +16,10 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIdString := string(mapUser[id])
+	userIDString := string(mapUser[id])
 	amountString := string(mapUser[amount])
 
-	userId, err := validate.IdValidate(userIdString)
+	userID, err := validate.IdValidate(userIDString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, err.Error())
@@ -33,7 +33,7 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userId, balance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId)
+	userID, balance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, "User not found")
@@ -47,8 +47,8 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.services.WritingOff.WritingOffUser(ctx, userId, correctAmount)
-	err = json.JSONWritingOff(w, userId, correctAmount)
+	h.services.WritingOff.WritingOffUser(ctx, userID, correctAmount)
+	err = json.JSONWritingOff(w, userID, correctAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

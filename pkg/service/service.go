@@ -7,23 +7,23 @@ import (
 )
 
 type UpBalance interface {
-	UpBalanceUser(context.Context, int64, float64) error
+	UpBalanceUser(ctx context.Context, uid int64, amount float64) error
 }
 
 type BalanceInfo interface {
-	BalanceInfoUser(context.Context, int64) (int64, float64, error)
+	BalanceInfoUser(ctx context.Context, uid int64) (userID int64, balance float64, err error)
 }
 
 type WritingOff interface {
-	WritingOffUser(context.Context, int64, float64) (int64, float64, error)
+	WritingOffUser(ctx context.Context, uid int64, amount float64) (userID int64, amountWritingOff float64, err error)
 }
 
 type AddDescription interface {
-	AddDescriptionUser(context.Context, int64, float64, float64, string, string, string) error
+	AddDescriptionUser(ctx context.Context, uid int64, balanceAtMoment float64, correctAmount float64, refill string, description string, senderReceiver string) error
 }
 
 type GetDescriptions interface {
-	GetDescriptionsUsers(context.Context, int64, string, string) ([]tech_task.Description, error)
+	GetDescriptionsUsers(ctx context.Context, uid int64, sortBy string, orderBy string) (descriptionsList []tech_task.Description, err error)
 }
 
 type Service struct {

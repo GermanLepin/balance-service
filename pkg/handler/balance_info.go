@@ -18,17 +18,17 @@ func (h *Handler) BalanceInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIdString := string(mapUser[id])
+	userIDString := string(mapUser[id])
 	currency := parse.Pars(r, currency)
 
-	userId, err := validate.IdValidate(userIdString)
+	userID, err := validate.IdValidate(userIDString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, err.Error())
 		return
 	}
 
-	_, rubBalance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userId)
+	_, rubBalance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.JSONError(w, "User not found")
@@ -40,13 +40,13 @@ func (h *Handler) BalanceInfo(w http.ResponseWriter, r *http.Request) {
 		usdToEur := convert.GetConvertValue(w, USD)
 		usdAmount := convert.UsdAmount(usdToEur, rub, rubBalance)
 		userBalanceUsd := math.Floor(usdAmount*static) / static
-		err = json.JSONBalanceInfo(w, userId, userBalanceUsd)
+		err = json.JSONBalanceInfo(w, userID, userBalanceUsd)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else if currency == nilValue {
-		err = json.JSONBalanceInfo(w, userId, rubBalance)
+		err = json.JSONBalanceInfo(w, userID, rubBalance)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			return

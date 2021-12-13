@@ -12,17 +12,17 @@ import (
 
 func (h *Handler) GetDescriptions(w http.ResponseWriter, r *http.Request) {
 	mapUser, _ := parse.ParsJSON(r)
-	userIdString := string(mapUser[id])
+	userIDString := string(mapUser[id])
 
 	var uid int64 = 0
-	if userIdString != "" {
-		userId, err := validate.IdValidate(userIdString)
+	if userIDString != "" {
+		userID, err := validate.IdValidate(userIDString)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.JSONError(w, err.Error())
 			return
 		}
-		uid = userId
+		uid = userID
 	}
 
 	sortBy := mapUser[sortBy]
@@ -50,7 +50,7 @@ func (h *Handler) GetDescriptions(w http.ResponseWriter, r *http.Request) {
 	}
 
 	for _, row := range descriptionSlice {
-		err := json.JSONUGetAllUsers(w, row)
+		err := json.JSONGetDescriptions(w, row)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			logrus.WithError(err).Errorf(err.Error())
