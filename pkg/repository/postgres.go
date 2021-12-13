@@ -38,7 +38,6 @@ func NewConnection(cfg *Config) (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 
 	conn.SetMaxOpenConns(25)
 	conn.SetMaxIdleConns(25)
