@@ -1,40 +1,13 @@
 package handler
 
 import (
-	"context"
 	"net/http"
-	json "tech_task/pkg/helpers/json_responce"
-	"tech_task/pkg/helpers/parse"
-	"tech_task/pkg/helpers/validate"
 
 	"github.com/sirupsen/logrus"
 )
 
-var (
-	asc            = "asc"
-	desc           = "desc"
-	description    = "description"
-	senderReceiver = "sender_receiver"
-	refill         = "refill"
-	FALSE          = "F"
-	TRUE           = "T"
-	nilValue       = ""
-	data           = "created_at"
-	amount         = "amount"
-	sortBy         = "sort_by"
-	orderBy        = "order_by"
-	ctx            = context.Background()
-	id             = "id"
-	id1            = "id1"
-	id2            = "id2"
-	currency       = "currency"
-	RUB            = "RUB"
-	USD            = "USD"
-	static         = 100.00
-)
-
 func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
-	mapUser, err := parse.ParsJSON(r)
+	mapUser, err := ParsJSON(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -44,23 +17,23 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 	if refill == nilValue {
 		w.WriteHeader(http.StatusBadRequest)
 		logrus.Errorf("Refill is not null field")
-		json.JSONError(w, "Refill is not null field")
+		JSONError(w, "Refill is not null field")
 		return
 	}
 
 	userIDString := string(mapUser[id])
-	userID, err := validate.IdValidate(userIDString)
+	userID, err := IdValidate(userIDString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, err.Error())
+		JSONError(w, err.Error())
 		return
 	}
 
 	amountString := string(mapUser[amount])
-	correctAmount, err := validate.AmountValidate(amountString)
+	correctAmount, err := AmountValidate(amountString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, err.Error())
+		JSONError(w, err.Error())
 		return
 	}
 
@@ -72,21 +45,21 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		err := h.services.UpBalance.UpBalanceUser(ctx, userID, correctAmount)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.JSONError(w, "User not found")
+			JSONError(w, "User not found")
 			return
 		}
 	case FALSE:
 		userID, balance, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userID)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.JSONError(w, "User not found")
+			JSONError(w, "User not found")
 			return
 		}
 
 		if correctAmount > balance {
 			w.WriteHeader(http.StatusBadRequest)
 			logrus.Errorf("Insufficient funds")
-			json.JSONError(w, "Insufficient funds")
+			JSONError(w, "Insufficient funds")
 			return
 		}
 
@@ -96,18 +69,18 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 	userID, balanceAtMoment, err := h.services.BalanceInfo.BalanceInfoUser(ctx, userID)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, "User not found")
+		JSONError(w, "User not found")
 		return
 	}
 
 	err = h.services.AddDescription.AddDescriptionUser(ctx, userID, balanceAtMoment, correctAmount, refill, description, senderReceiver)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, "User not found")
+		JSONError(w, "User not found")
 		return
 	}
 
-	err = json.JSONUAddDescription(w, userID, balanceAtMoment, correctAmount, refill, description, senderReceiver)
+	err = JSONUAddDescription(w, userID, balanceAtMoment, correctAmount, refill, description, senderReceiver)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return

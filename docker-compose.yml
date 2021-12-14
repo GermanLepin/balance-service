@@ -18,7 +18,7 @@ services:
     image: postgres:11
     container_name: avito-tech-postgres
     volumes:
-        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ./docker-entrypoint-initdb.d:/init.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234

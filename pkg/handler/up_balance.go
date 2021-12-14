@@ -2,15 +2,12 @@ package handler
 
 import (
 	"net/http"
-	json "tech_task/pkg/helpers/json_responce"
-	"tech_task/pkg/helpers/parse"
-	"tech_task/pkg/helpers/validate"
 
 	"github.com/sirupsen/logrus"
 )
 
 func (h *Handler) UpBalance(w http.ResponseWriter, r *http.Request) {
-	mapUser, err := parse.ParsJSON(r)
+	mapUser, err := ParsJSON(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -19,17 +16,17 @@ func (h *Handler) UpBalance(w http.ResponseWriter, r *http.Request) {
 	userIDString := string(mapUser[id])
 	amountString := string(mapUser[amount])
 
-	userID, err := validate.IdValidate(userIDString)
+	userID, err := IdValidate(userIDString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, err.Error())
+		JSONError(w, err.Error())
 		return
 	}
 
-	correctAmount, err := validate.AmountValidate(amountString)
+	correctAmount, err := AmountValidate(amountString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.JSONError(w, err.Error())
+		JSONError(w, err.Error())
 		return
 	}
 
@@ -40,7 +37,7 @@ func (h *Handler) UpBalance(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = json.JSONUpBalance(w, userID, correctAmount)
+	err = JSONUpBalance(w, userID, correctAmount)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
