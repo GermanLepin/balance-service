@@ -8,10 +8,10 @@ import (
 
 func (h *Handler) GetDescriptions(w http.ResponseWriter, r *http.Request) {
 	mapUser, _ := ParsJSON(r)
-	userIDString := string(mapUser[id])
+	userIDString := mapUser[id]
 
 	var uid int64 = 0
-	if userIDString != "" {
+	if userIDString != nilValue {
 		userID, err := IdValidate(userIDString)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)

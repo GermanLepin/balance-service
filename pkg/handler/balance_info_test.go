@@ -30,11 +30,11 @@ func TestHandler_BalanceInfo(t *testing.T) {
 	}{
 		{
 			name:      "Ok",
-			inputBody: `{"id":"1"}`,
+			inputBody: `{"user id":"1"}`,
 			inputUser: 1,
 			mockBehavior: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 1
-				var balance float64 = 830.55
+				var balance = 830.55
 				var err error = nil
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
@@ -43,20 +43,20 @@ func TestHandler_BalanceInfo(t *testing.T) {
 		},
 		{
 			name:                 "Wrong Input",
-			inputBody:            `{"id":"-1"}`,
+			inputBody:            `{"user id":"-1"}`,
 			inputUser:            -1,
 			mockBehavior:         func(r *mock_service.MockBalanceInfo, id int64) {},
 			expectedStatusCode:   400,
-			expectedResponseBody: "{\"error\":\"incorrect value id user\"}\n",
+			expectedResponseBody: "{\"error\":\"incorrect value user id\"}\n",
 		},
 		{
 			name:      "User not found",
-			inputBody: `{"id":"99999999"}`,
+			inputBody: `{"user id":"99999999"}`,
 			inputUser: 99999999,
 			mockBehavior: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 0
 				var balance float64 = 0
-				var err error = errors.New("{\"error\":\"User not found\"}\n")
+				var err = errors.New("{\"error\":\"User not found\"}\n")
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			expectedStatusCode:   400,

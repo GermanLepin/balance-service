@@ -30,18 +30,18 @@ func TestHandler_WritingOff(t *testing.T) {
 	}{
 		{
 			name:        "Ok",
-			inputBody:   `{"id":"1","amount":"969.63"}`,
+			inputBody:   `{"user id":"1","amount":"969.63"}`,
 			inputUser:   1,
 			inputAmount: 969.63,
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 1
-				var balance float64 = 1830.55
+				var balance = 1830.55
 				var err error = nil
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			mockBehaviorWritingOff: func(r *mock_service.MockWritingOff, id int64, amount float64) {
 				var uid int64 = 1
-				var respAmount float64 = 969.63
+				var respAmount = 969.63
 				var err error = nil
 				r.EXPECT().WritingOffUser(ctx, id, amount).Return(uid, respAmount, err)
 			},
@@ -50,17 +50,17 @@ func TestHandler_WritingOff(t *testing.T) {
 		},
 		{
 			name:                    "Wrong input user",
-			inputBody:               `{"id":"-1","amount":"1569.77"}`,
+			inputBody:               `{"user id":"-1","amount":"1569.77"}`,
 			inputUser:               -1,
 			inputAmount:             1569.77,
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {},
 			mockBehaviorWritingOff:  func(r *mock_service.MockWritingOff, id int64, amount float64) {},
 			expectedStatusCode:      400,
-			expectedResponseBody:    "{\"error\":\"incorrect value id user\"}\n",
+			expectedResponseBody:    "{\"error\":\"incorrect value user id\"}\n",
 		},
 		{
 			name:                    "Wrong input amount",
-			inputBody:               `{"id":"1","amount":"-1569.77"}`,
+			inputBody:               `{"user id":"1","amount":"-1569.77"}`,
 			inputUser:               1,
 			inputAmount:             -1569.77,
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {},
@@ -70,7 +70,7 @@ func TestHandler_WritingOff(t *testing.T) {
 		},
 		{
 			name:                    "Wrong input more 2 decimal places",
-			inputBody:               `{"id":"1","amount":"1569.77345"}`,
+			inputBody:               `{"user id":"1","amount":"1569.77345"}`,
 			inputUser:               1,
 			inputAmount:             1569.77345,
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {},
@@ -80,13 +80,13 @@ func TestHandler_WritingOff(t *testing.T) {
 		},
 		{
 			name:        "User not found",
-			inputBody:   `{"id":"99999999","amount":"1569.77"}`,
+			inputBody:   `{"user id":"99999999","amount":"1569.77"}`,
 			inputUser:   99999999,
 			inputAmount: 1569.77,
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 0
 				var balance float64 = 0
-				var err error = errors.New("{\"error\":\"User not found\"}\n")
+				var err = errors.New("{\"error\":\"User not found\"}\n")
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			mockBehaviorWritingOff: func(r *mock_service.MockWritingOff, id int64, amount float64) {},

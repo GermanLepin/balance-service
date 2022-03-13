@@ -14,7 +14,7 @@ func (h *Handler) BalanceInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIDString := string(mapUser[id])
+	userIDString := mapUser[id]
 	currency := Pars(r, currency)
 
 	userID, err := IdValidate(userIDString)
