@@ -29,7 +29,7 @@ func TestHandler_UpBalance(t *testing.T) {
 	}{
 		{
 			name:        "Ok",
-			inputBody:   `{"id":"1","amount":"1569.77"}`,
+			inputBody:   `{"user id":"1","amount":"1569.77"}`,
 			inputUser:   1,
 			inputAmount: 1569.77,
 			mockBehavior: func(r *mock_service.MockUpBalance, id int64, amount float64) {
@@ -41,16 +41,16 @@ func TestHandler_UpBalance(t *testing.T) {
 		},
 		{
 			name:                 "Wrong input user",
-			inputBody:            `{"id":"-1","amount":"1569.77"}`,
+			inputBody:            `{"user id":"-1","amount":"1569.77"}`,
 			inputUser:            -1,
 			inputAmount:          1569.77,
 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float64) {},
 			expectedStatusCode:   400,
-			expectedResponseBody: "{\"error\":\"incorrect value id user\"}\n",
+			expectedResponseBody: "{\"error\":\"incorrect value user id\"}\n",
 		},
 		{
 			name:                 "Wrong input amount",
-			inputBody:            `{"id":"1","amount":"-1569.77"}`,
+			inputBody:            `{"user id":"1","amount":"-1569.77"}`,
 			inputUser:            1,
 			inputAmount:          -1569.77,
 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float64) {},
@@ -59,7 +59,7 @@ func TestHandler_UpBalance(t *testing.T) {
 		},
 		{
 			name:                 "Wrong input more 2 decimal places",
-			inputBody:            `{"id":"1","amount":"1569.77345"}`,
+			inputBody:            `{"user id":"1","amount":"1569.77345"}`,
 			inputUser:            1,
 			inputAmount:          1569.77345,
 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float64) {},

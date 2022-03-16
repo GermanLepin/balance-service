@@ -5,32 +5,31 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
 	"tech_task"
-
-	"github.com/sirupsen/logrus"
 )
 
 var (
 	asc            = "asc"
 	desc           = "desc"
 	description    = "description"
-	senderReceiver = "sender_receiver"
+	senderReceiver = "sender receiver"
 	refill         = "refill"
 	FALSE          = "F"
 	TRUE           = "T"
 	nilValue       = ""
-	data           = "created_at"
+	data           = "created at"
 	amount         = "amount"
-	sortBy         = "sort_by"
-	orderBy        = "order_by"
+	sortBy         = "sort by"
+	orderBy        = "order by"
 	ctx            = context.Background()
-	id             = "id"
-	id1            = "id1"
-	id2            = "id2"
+	id             = "user id"
+	id1            = "user id1"
+	id2            = "user id2"
 	currency       = "currency"
 	RUB            = "RUB"
 	USD            = "USD"
@@ -41,15 +40,34 @@ var (
 	accessKey      = "27c4039d0e33e2f74fbdc7afa63c08a8"
 )
 
+func JSONError(w http.ResponseWriter, errorStr string) error {
+	type JSONErr struct {
+		Error string `json:"error"`
+	}
+
+	errorJson := JSONErr{
+		Error: errorStr,
+	}
+
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(&errorJson)
+	if err != nil {
+		logrus.WithError(err).Errorf(err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func IdValidate(idAccount string) (int64, error) {
 	id, err := strconv.ParseInt(idAccount, 0, 64)
 	if err != nil {
-		logrus.WithError(err).Errorf("error with parcing id")
-		return 0, errors.New("error with parcing id")
+		logrus.WithError(err).Errorf("error with parcing user id")
+		return 0, errors.New("error with parcing user id")
 	}
 	if id < 1 {
-		logrus.Errorf("incorrect value id user")
-		return 0, errors.New("incorrect value id user")
+		logrus.Errorf("incorrect value user id ")
+		return 0, errors.New("incorrect value user id")
 	}
 
 	return id, nil
@@ -92,7 +110,7 @@ func ParsJSON(r *http.Request) (map[string]string, error) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		logrus.WithError(err).Errorf("error parcing request")
-		return nil, errors.New("error with parcing id")
+		return nil, errors.New("error with parcing user id")
 	}
 
 	if err := json.Unmarshal(body, &mapUser); err != nil {
@@ -201,6 +219,17 @@ func JSONUAddDescription(w http.ResponseWriter, id int64, balanceAtMoment, corec
 	return nil
 }
 
+func JSONGetDescriptions(w http.ResponseWriter, row tech_task.Description) error {
+	encoder := json.NewEncoder(w)
+	err := encoder.Encode(&row)
+	if err != nil {
+		logrus.WithError(err).Errorf(err.Error())
+		return err
+	}
+
+	return nil
+}
+
 func JSONBalanceInfo(w http.ResponseWriter, id int64, userBalance float64) error {
 	type BalanceInformation struct {
 		Id      int64   `json:"user id"`
@@ -214,36 +243,6 @@ func JSONBalanceInfo(w http.ResponseWriter, id int64, userBalance float64) error
 
 	encoder := json.NewEncoder(w)
 	err := encoder.Encode(&balanceInfo)
-	if err != nil {
-		logrus.WithError(err).Errorf(err.Error())
-		return err
-	}
-
-	return nil
-}
-
-func JSONError(w http.ResponseWriter, errorStr string) error {
-	type JSONErr struct {
-		Error string `json:"error"`
-	}
-
-	errorJson := JSONErr{
-		Error: errorStr,
-	}
-
-	encoder := json.NewEncoder(w)
-	err := encoder.Encode(&errorJson)
-	if err != nil {
-		logrus.WithError(err).Errorf(err.Error())
-		return err
-	}
-
-	return nil
-}
-
-func JSONGetDescriptions(w http.ResponseWriter, row tech_task.Description) error {
-	encoder := json.NewEncoder(w)
-	err := encoder.Encode(&row)
 	if err != nil {
 		logrus.WithError(err).Errorf(err.Error())
 		return err

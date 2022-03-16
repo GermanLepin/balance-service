@@ -13,15 +13,7 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	refill := string(mapUser[refill])
-	if refill == nilValue {
-		w.WriteHeader(http.StatusBadRequest)
-		logrus.Errorf("Refill is not null field")
-		JSONError(w, "Refill is not null field")
-		return
-	}
-
-	userIDString := string(mapUser[id])
+	userIDString := mapUser[id]
 	userID, err := IdValidate(userIDString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -29,7 +21,7 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	amountString := string(mapUser[amount])
+	amountString := mapUser[amount]
 	correctAmount, err := AmountValidate(amountString)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -37,8 +29,29 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	description := string(mapUser[description])
-	senderReceiver := string(mapUser[senderReceiver])
+	description := mapUser[description]
+	if description == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.Errorf("Description is not null field")
+		JSONError(w, "Description is not null field")
+		return
+	}
+
+	senderReceiver := mapUser[senderReceiver]
+	if senderReceiver == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.Errorf("Sender receiver is not null field")
+		JSONError(w, "Sender receiver is not null field")
+		return
+	}
+
+	refill := mapUser[refill]
+	if refill == nilValue {
+		w.WriteHeader(http.StatusBadRequest)
+		logrus.Errorf("Refill is not null field")
+		JSONError(w, "Refill is not null field")
+		return
+	}
 
 	switch refill {
 	case TRUE:

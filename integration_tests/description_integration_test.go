@@ -32,7 +32,7 @@ func (b *DescriptionSuite) TestIntegration_AddDescription() {
 	}{
 		{
 			name:                 "AddDescriptionRefil",
-			inputBody:            `{"id": "999999","amount": "6780","description": "Продажа наушников","sender_receiver": "Avito","refill": "T"}`,
+			inputBody:            `{"user id": "999999","amount": "6780","description": "Продажа наушников","sender receiver": "Avito","refill": "T"}`,
 			http:                 http.MethodPost,
 			url:                  fmt.Sprintf("http://%s/descriptions/add", ServeAddress),
 			expectedStatusCode:   200,
@@ -40,7 +40,7 @@ func (b *DescriptionSuite) TestIntegration_AddDescription() {
 		},
 		{
 			name:                 "AddDescriptionWritingOff",
-			inputBody:            `{"id": "999999","amount": "5320","description": "Покупка куртки","sender_receiver": "Avito","refill": "F"}`,
+			inputBody:            `{"user id": "999999","amount": "5320","description": "Покупка куртки","sender receiver": "Avito","refill": "F"}`,
 			http:                 http.MethodPost,
 			url:                  fmt.Sprintf("http://%s/descriptions/add", ServeAddress),
 			expectedStatusCode:   200,
@@ -130,21 +130,21 @@ func (b *DescriptionSuite) TestIntegration_GetUserIdDescriptions() {
 	}{
 		{
 			name:               "GetUserIdDescription",
-			inputBody:          `{"id": "999999"}`,
+			inputBody:          `{"user id": "999999"}`,
 			http:               http.MethodGet,
 			url:                fmt.Sprintf("http://%s/descriptions/get", ServeAddress),
 			expectedStatusCode: 200,
 		},
 		{
 			name:               "GetUserIdDescriptionSortAmount",
-			inputBody:          `{"id": "999999","sort_by": "amount"}`,
+			inputBody:          `{"user id": "999999","sort by": "amount"}`,
 			http:               http.MethodGet,
 			url:                fmt.Sprintf("http://%s/descriptions/get", ServeAddress),
 			expectedStatusCode: 200,
 		},
 		{
 			name:               "GetUserIdDescriptionSortDescAmount",
-			inputBody:          `{"id": "999999","sort_by": "amount", "order_by":"desc"}`,
+			inputBody:          `{"user id": "999999","sort by": "amount", "order by":"desc"}`,
 			http:               http.MethodGet,
 			url:                fmt.Sprintf("http://%s/descriptions/get", ServeAddress),
 			expectedStatusCode: 200,

@@ -13,9 +13,9 @@ func (h *Handler) U2U(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIDString1 := string(mapUser[id1])
-	userIDString2 := string(mapUser[id2])
-	amountString := string(mapUser[amount])
+	userIDString1 := mapUser[id1]
+	userIDString2 := mapUser[id2]
+	amountString := mapUser[amount]
 
 	userID1, err := IdValidate(userIDString1)
 	if err != nil {

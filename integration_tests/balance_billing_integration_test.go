@@ -32,7 +32,7 @@ func (b *BalanceBillingSuite) TestIntegration_BalanceBilling() {
 	}{
 		{
 			name:                 "UpBalanceRequest",
-			inputBody:            `{"id":"111111","amount":"1000.55"}`,
+			inputBody:            `{"user id":"111111","amount":"1000.55"}`,
 			http:                 http.MethodPost,
 			url:                  fmt.Sprintf("http://%s/up-balance", ServeAddress),
 			expectedStatusCode:   200,
@@ -40,7 +40,7 @@ func (b *BalanceBillingSuite) TestIntegration_BalanceBilling() {
 		},
 		{
 			name:                 "WritingOffRequest",
-			inputBody:            `{"id":"111111","amount":"250.55"}`,
+			inputBody:            `{"user id":"111111","amount":"250.55"}`,
 			http:                 http.MethodPatch,
 			url:                  fmt.Sprintf("http://%s/writing-off", ServeAddress),
 			expectedStatusCode:   200,
@@ -48,7 +48,7 @@ func (b *BalanceBillingSuite) TestIntegration_BalanceBilling() {
 		},
 		{
 			name:                 "UserToUserRequest",
-			inputBody:            `{"id1":"111111","id2":"222222","amount":"349.99"}`,
+			inputBody:            `{"user id1":"111111","user id2":"222222","amount":"349.99"}`,
 			http:                 http.MethodPatch,
 			url:                  fmt.Sprintf("http://%s/user-to-user", ServeAddress),
 			expectedStatusCode:   200,
@@ -56,7 +56,7 @@ func (b *BalanceBillingSuite) TestIntegration_BalanceBilling() {
 		},
 		{
 			name:                 "BalanceInfoRequest",
-			inputBody:            `{"id":"111111"}`,
+			inputBody:            `{"user id":"111111"}`,
 			http:                 http.MethodGet,
 			url:                  fmt.Sprintf("http://%s/balance-info", ServeAddress),
 			expectedStatusCode:   200,

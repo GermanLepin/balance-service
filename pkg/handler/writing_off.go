@@ -13,8 +13,8 @@ func (h *Handler) WritingOff(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userIDString := string(mapUser[id])
-	amountString := string(mapUser[amount])
+	userIDString := mapUser[id]
+	amountString := mapUser[amount]
 
 	userID, err := IdValidate(userIDString)
 	if err != nil {

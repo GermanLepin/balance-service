@@ -35,7 +35,7 @@ func TestHandler_U2U(t *testing.T) {
 	}{
 		{
 			name:            "Ok",
-			inputBody:       `{"id1":"1","id2":"2","amount":"743.63"}`,
+			inputBody:       `{"user id1":"1","user id2":"2","amount":"743.63"}`,
 			inputFirstUser:  1,
 			inputSecondUser: 2,
 			inputAmount:     743.63,
@@ -45,13 +45,13 @@ func TestHandler_U2U(t *testing.T) {
 			},
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 1
-				var balance float64 = 1839.55
+				var balance = 1839.55
 				var err error = nil
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			mockBehaviorWritingOff: func(r *mock_service.MockWritingOff, id int64, amount float64) {
 				var uid int64 = 1
-				var respAmount float64 = 743.63
+				var respAmount = 743.63
 				var err error = nil
 				r.EXPECT().WritingOffUser(ctx, id, amount).Return(uid, respAmount, err)
 			},
@@ -60,7 +60,7 @@ func TestHandler_U2U(t *testing.T) {
 		},
 		{
 			name:                    "Wrong input user",
-			inputBody:               `{"id1":"-1","id2":"2","amount":"743.63"}`,
+			inputBody:               `{"user id1":"-1","user id2":"2","amount":"743.63"}`,
 			inputFirstUser:          -1,
 			inputSecondUser:         2,
 			inputAmount:             1569.77,
@@ -68,11 +68,11 @@ func TestHandler_U2U(t *testing.T) {
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {},
 			mockBehaviorWritingOff:  func(r *mock_service.MockWritingOff, id int64, amount float64) {},
 			expectedStatusCode:      400,
-			expectedResponseBody:    "{\"error\":\"incorrect value id user\"}\n",
+			expectedResponseBody:    "{\"error\":\"incorrect value user id\"}\n",
 		},
 		{
 			name:                    "Wrong input amount",
-			inputBody:               `{"id1":"1","id2":"2","amount":"-743.63"}`,
+			inputBody:               `{"user id1":"1","user id2":"2","amount":"-743.63"}`,
 			inputFirstUser:          1,
 			inputSecondUser:         2,
 			inputAmount:             -743.63,
@@ -84,7 +84,7 @@ func TestHandler_U2U(t *testing.T) {
 		},
 		{
 			name:                    "Wrong input more 2 decimal places",
-			inputBody:               `{"id1":"1","id2":"2","amount":"743.63453"}`,
+			inputBody:               `{"user id1":"1","user id2":"2","amount":"743.63453"}`,
 			inputFirstUser:          1,
 			inputSecondUser:         2,
 			inputAmount:             743.63453,
@@ -96,7 +96,7 @@ func TestHandler_U2U(t *testing.T) {
 		},
 		{
 			name:                  "User not found",
-			inputBody:             `{"id1":"999888","id2":"2","amount":"743.63"}`,
+			inputBody:             `{"user id1":"999888","user id2":"2","amount":"743.63"}`,
 			inputFirstUser:        999888,
 			inputSecondUser:       2,
 			inputAmount:           743.63,
@@ -104,7 +104,7 @@ func TestHandler_U2U(t *testing.T) {
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 0
 				var balance float64 = 0
-				var err error = errors.New("{\"error\":\"User not found\"}\n")
+				var err = errors.New("{\"error\":\"User not found\"}\n")
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			mockBehaviorWritingOff: func(r *mock_service.MockWritingOff, id int64, amount float64) {},

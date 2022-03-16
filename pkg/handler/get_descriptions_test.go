@@ -37,7 +37,7 @@ func TestHandler_GetAllUsersDescriptionsSort(t *testing.T) {
 			sortBy:    "",
 			orderBy:   "",
 			mockBehaviorGetDescriptions: func(r *mock_service.MockGetDescriptions, id int64, sortBy, orderBy string) {
-				var list []tech_task.Description = []tech_task.Description{
+				var list = []tech_task.Description{
 					{
 						Id:              1,
 						SenderReceiver:  "Avito",
@@ -77,12 +77,12 @@ func TestHandler_GetAllUsersDescriptionsSort(t *testing.T) {
 		},
 		{
 			name:      "Get user descriptions",
-			inputBody: `{"id":"1"}`,
+			inputBody: `{"user id":"1"}`,
 			uid:       1,
 			sortBy:    "",
 			orderBy:   "",
 			mockBehaviorGetDescriptions: func(r *mock_service.MockGetDescriptions, id int64, sortBy, orderBy string) {
-				var list []tech_task.Description = []tech_task.Description{
+				var list = []tech_task.Description{
 					{
 						Id:              1,
 						SenderReceiver:  "Avito",
@@ -112,12 +112,12 @@ func TestHandler_GetAllUsersDescriptionsSort(t *testing.T) {
 		},
 		{
 			name:      "Get user descriptions sort amount",
-			inputBody: `{"id":"1","sort_by":"amount"}`,
+			inputBody: `{"user id":"1","sort by":"amount"}`,
 			uid:       1,
 			sortBy:    "amount",
 			orderBy:   "",
 			mockBehaviorGetDescriptions: func(r *mock_service.MockGetDescriptions, id int64, sortBy, orderBy string) {
-				var list []tech_task.Description = []tech_task.Description{
+				var list = []tech_task.Description{
 					{
 						Id:              2,
 						SenderReceiver:  "Avito",
@@ -147,12 +147,12 @@ func TestHandler_GetAllUsersDescriptionsSort(t *testing.T) {
 		},
 		{
 			name:      "Get user descriptions sort amount order by desc",
-			inputBody: `{"id":"1","sort_by":"amount", "order_by":"desc"}`,
+			inputBody: `{"user id":"1","sort by":"amount", "order by":"desc"}`,
 			uid:       1,
 			sortBy:    "amount",
 			orderBy:   "desc",
 			mockBehaviorGetDescriptions: func(r *mock_service.MockGetDescriptions, id int64, sortBy, orderBy string) {
-				var list []tech_task.Description = []tech_task.Description{
+				var list = []tech_task.Description{
 					{
 						Id:              1,
 						SenderReceiver:  "Avito",

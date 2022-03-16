@@ -34,15 +34,15 @@ func (b *ErrorSuite) TestIntegration_ErrorIntegration() {
 	}{
 		{
 			name:                 "ErrorUserID",
-			inputBody:            `{"id":"-111111","amount":"1000.55"}`,
+			inputBody:            `{"user id":"-111111","amount":"1000.55"}`,
 			http:                 http.MethodPost,
 			url:                  fmt.Sprintf("http://%s/up-balance", ServeAddress),
 			expectedStatusCode:   400,
-			expectedResponseBody: "{\"error\":\"incorrect value id user\"}\n",
+			expectedResponseBody: "{\"error\":\"incorrect value user id\"}\n",
 		},
 		{
 			name:                 "ErrorAmount",
-			inputBody:            `{"id":"111111","amount":"250.5556"}`,
+			inputBody:            `{"user id":"111111","amount":"250.5556"}`,
 			http:                 http.MethodPatch,
 			url:                  fmt.Sprintf("http://%s/writing-off", ServeAddress),
 			expectedStatusCode:   400,
@@ -50,7 +50,7 @@ func (b *ErrorSuite) TestIntegration_ErrorIntegration() {
 		},
 		{
 			name:                 "ErrorNegativeAmount",
-			inputBody:            `{"id":"111111","amount":"-250.55"}`,
+			inputBody:            `{"user id":"111111","amount":"-250.55"}`,
 			http:                 http.MethodPatch,
 			url:                  fmt.Sprintf("http://%s/writing-off", ServeAddress),
 			expectedStatusCode:   400,
@@ -58,7 +58,7 @@ func (b *ErrorSuite) TestIntegration_ErrorIntegration() {
 		},
 		{
 			name:                 "UserNotFound",
-			inputBody:            `{"id":"99999999999"}`,
+			inputBody:            `{"user id":"99999999999"}`,
 			http:                 http.MethodGet,
 			url:                  fmt.Sprintf("http://%s/balance-info", ServeAddress),
 			expectedStatusCode:   400,
@@ -66,7 +66,7 @@ func (b *ErrorSuite) TestIntegration_ErrorIntegration() {
 		},
 		{
 			name:                 "BalanceInfoErrorConverUSDRequest",
-			inputBody:            `{"id":"111111"}`,
+			inputBody:            `{"user id":"111111"}`,
 			http:                 http.MethodGet,
 			url:                  fmt.Sprintf("http://%s/balance-info?convert&currency=US", ServeAddress),
 			expectedStatusCode:   400,

@@ -40,7 +40,7 @@ func TestHandler_AddDescription(t *testing.T) {
 	}{
 		{
 			name:           "Add desciption refill true",
-			inputBody:      `{"id": "1","amount": "3680","description": "Покупка наушников","sender_receiver": "Avito","refill": "T"}`,
+			inputBody:      `{"user id":"1","amount": "3680","description": "Покупка наушников","sender receiver": "Avito","refill": "T"}`,
 			inputUser:      1,
 			balance:        1085.55,
 			inputAmount:    3680,
@@ -53,7 +53,7 @@ func TestHandler_AddDescription(t *testing.T) {
 			},
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 1
-				var balance float64 = 1085.55
+				var balance = 1085.55
 				var err error = nil
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
@@ -67,7 +67,7 @@ func TestHandler_AddDescription(t *testing.T) {
 		},
 		{
 			name:           "Wrong input user",
-			inputBody:      `{"id": "-1","amount": "3680","description": "Покупка наушников","sender_receiver": "Avito","refill": "F"}`,
+			inputBody:      `{"user id": "-1","amount": "3680","description": "Покупка наушников","sender receiver": "Avito","refill": "F"}`,
 			inputUser:      -1,
 			balance:        10839.55,
 			inputAmount:    3680,
@@ -80,11 +80,11 @@ func TestHandler_AddDescription(t *testing.T) {
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {},
 			mockBehaviorWritingOff:  func(r *mock_service.MockWritingOff, id int64, amount float64) {},
 			expectedStatusCode:      400,
-			expectedResponseBody:    "{\"error\":\"incorrect value id user\"}\n",
+			expectedResponseBody:    "{\"error\":\"incorrect value user id\"}\n",
 		},
 		{
 			name:           "Wrong input amount",
-			inputBody:      `{"id": "1","amount": "-3680","description": "Покупка наушников","sender_receiver": "Avito","refill": "F"}`,
+			inputBody:      `{"user id": "1","amount": "-3680","description": "Покупка наушников","sender receiver": "Avito","refill": "F"}`,
 			inputUser:      1,
 			balance:        10839.55,
 			inputAmount:    -3680,
@@ -101,7 +101,7 @@ func TestHandler_AddDescription(t *testing.T) {
 		},
 		{
 			name:           "Wrong input more 2 decimal places",
-			inputBody:      `{"id": "1","amount": "3680.9876543","description": "Покупка наушников","sender_receiver": "Avito","refill": "F"}`,
+			inputBody:      `{"user id": "1","amount": "3680.9876543","description": "Покупка наушников","sender receiver": "Avito","refill": "F"}`,
 			inputUser:      1,
 			balance:        10839.55,
 			inputAmount:    3680.9876543,
@@ -118,7 +118,7 @@ func TestHandler_AddDescription(t *testing.T) {
 		},
 		{
 			name:           "User not found",
-			inputBody:      `{"id": "987654321","amount": "3680.98","description": "Покупка наушников","sender_receiver": "Avito","refill": "F"}`,
+			inputBody:      `{"user id": "987654321","amount": "3680.98","description": "Покупка наушников","sender receiver": "Avito","refill": "F"}`,
 			inputUser:      987654321,
 			balance:        10839.55,
 			inputAmount:    3680.98,
@@ -131,7 +131,7 @@ func TestHandler_AddDescription(t *testing.T) {
 			mockBehaviorBalanceInfo: func(r *mock_service.MockBalanceInfo, id int64) {
 				var uid int64 = 0
 				var balance float64 = 0
-				var err error = errors.New("{\"error\":\"User not found\"}\n")
+				var err = errors.New("{\"error\":\"User not found\"}\n")
 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 			},
 			mockBehaviorWritingOff: func(r *mock_service.MockWritingOff, id int64, amount float64) {},
@@ -139,8 +139,8 @@ func TestHandler_AddDescription(t *testing.T) {
 			expectedResponseBody:   "{\"error\":\"User not found\"}\n",
 		},
 		{
-			name:           "Wrong input refil",
-			inputBody:      `{"id": "1","amount": "3680.98","description": "Покупка наушников","sender_receiver": "Avito","refill": ""}`,
+			name:           "Wrong input refill",
+			inputBody:      `{"user id": "1","amount": "3680.98","description": "Покупка наушников","sender receiver": "Avito","refill": ""}`,
 			inputUser:      987654321,
 			balance:        10839.55,
 			inputAmount:    3680.98,
