@@ -1,14 +1,10 @@
-package tech_task
+package server_service
 
 import (
 	"context"
 	"net/http"
 	"time"
 )
-
-type Server struct {
-	httpServer *http.Server
-}
 
 func (s *Server) Run(port string, handler http.Handler) error {
 	s.httpServer = &http.Server{
@@ -23,4 +19,8 @@ func (s *Server) Run(port string, handler http.Handler) error {
 
 func (s *Server) Shutdown(ctx context.Context) error {
 	return s.httpServer.Shutdown(ctx)
+}
+
+type Server struct {
+	httpServer *http.Server
 }

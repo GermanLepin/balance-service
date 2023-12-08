@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  broker-service:
+    build:
+      context: ./../
+      dockerfile: ./../tech-task-service.dockerfile
+    ports:
+      - "8080:80"
+    deploy:
+      mode: replicated
+      replicas: 1
+    restart: always
+
+  postgres:
+    image: 'postgres:14.2'
+    ports:
+      - "5432:5432"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: avito_db
+    restart: always
+    volumes:
+      - ./db-data/postgres/:/var/lib/postgresql/data/

@@ -8,14 +8,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type BalanceInfoPostgres struct {
-	db *sql.DB
-}
-
-func NewBalanceInfoPostgres(db *sql.DB) *BalanceInfoPostgres {
-	return &BalanceInfoPostgres{db: db}
-}
-
 func (u *BalanceInfoPostgres) BalanceInfoDB(ctx context.Context, id int64) (userID int64, balance float64, err error) {
 	user := &tech_task.User{}
 	err = u.db.QueryRow("SELECT id, balance FROM users WHERE id=$1;", id).Scan(&user.ID, &user.Balance)
@@ -25,4 +17,12 @@ func (u *BalanceInfoPostgres) BalanceInfoDB(ctx context.Context, id int64) (user
 	}
 
 	return user.ID, user.Balance, nil
+}
+
+type BalanceInfoPostgres struct {
+	db *sql.DB
+}
+
+func NewBalanceInfoPostgres(db *sql.DB) *BalanceInfoPostgres {
+	return &BalanceInfoPostgres{db: db}
 }
