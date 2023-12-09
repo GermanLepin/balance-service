@@ -6,8 +6,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
-	mapUser, err := ParsJSON(r)
+type (
+	JsonService interface {
+		ParsJSON(r *http.Request) (map[string]string, error)
+
+		WriteJSON(w http.ResponseWriter, status int, data any, headers ...http.Header) error
+		ReadJSON(w http.ResponseWriter, r *http.Request, data any) error
+	}
+)
+
+func (s *service) AddDescription(w http.ResponseWriter, r *http.Request) {
+	mapUser, err := s.jsonService.ParsJSON(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -98,4 +107,16 @@ func (h *Handler) AddDescription(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+}
+
+func New(
+	jsonService JsonService,
+) *service {
+	return &service{
+		jsonService: jsonService,
+	}
+}
+
+type service struct {
+	jsonService JsonService
 }

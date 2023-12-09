@@ -20,6 +20,10 @@ type (
 	FetchBalanceInfoHandler interface {
 		FetchBalanceInfo(w http.ResponseWriter, r *http.Request)
 	}
+
+	ReplenishBalanceHandler interface {
+		ReplenishBalance(w http.ResponseWriter, r *http.Request)
+	}
 )
 
 func (s *service) NewRoutes() http.Handler {
@@ -42,7 +46,7 @@ func (s *service) NewRoutes() http.Handler {
 
 	router.Route("/balance", func(r chi.Router) {
 		r.Get("/info/{uuid}", s.fetchBalanceInfoHandler.FetchBalanceInfo)
-		// r.Post("/replenishment", s.balanceService.BalanceReplenishment)
+		r.Post("/replenish", s.replenishBalanceHandler.ReplenishBalance)
 		// r.Patch("/debit", s.balanceService.BalanceDebit)
 		// r.Patch("/user-to-user", s.balanceService.UserToUser)
 	})
@@ -61,6 +65,7 @@ func New(
 	createUserHandler CreateUserHandler,
 	deleteUserHandler DeleteUserHandler,
 	fetchBalanceInfoHandler FetchBalanceInfoHandler,
+	replenishBalanceHandler ReplenishBalanceHandler,
 ) *service {
 	return &service{
 		connection: connection,
@@ -68,6 +73,7 @@ func New(
 		createUserHandler:       createUserHandler,
 		deleteUserHandler:       deleteUserHandler,
 		fetchBalanceInfoHandler: fetchBalanceInfoHandler,
+		replenishBalanceHandler: replenishBalanceHandler,
 	}
 }
 
@@ -77,4 +83,5 @@ type service struct {
 	createUserHandler       CreateUserHandler
 	deleteUserHandler       DeleteUserHandler
 	fetchBalanceInfoHandler FetchBalanceInfoHandler
+	replenishBalanceHandler ReplenishBalanceHandler
 }

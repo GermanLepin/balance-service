@@ -1,21 +1,25 @@
 package repository
 
-// import (
-// 	"context"
-// 	"database/sql"
-// 	"errors"
-// 	"tech_task"
+import (
+	"database/sql"
+)
 
-// 	sq "github.com/Masterminds/squirrel"
-// 	"github.com/sirupsen/logrus"
-// )
+// func (a *AddDescriptionPostgres) AddDescriptionDB(ctx context.Context, id int64, balanceAtMoment, corectAmount float64, refill, description, senderReceiver string) error {
+// 	_, err := a.db.Exec("insert into descriptions (created_at, description, sender_receiver, balance_at_moment, amount, refill, user_id) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+// 		time.Now(),
+// 		description,
+// 		senderReceiver,
+// 		balanceAtMoment,
+// 		corectAmount,
+// 		refill,
+// 		id,
+// 	)
+// 	if err != nil {
+// 		logrus.WithError(err).Errorf("user not found")
+// 		return err
+// 	}
 
-// type GetDescriptionsPostgres struct {
-// 	db *sql.DB
-// }
-
-// func NewGetDescriptionsPostgres(db *sql.DB) *GetDescriptionsPostgres {
-// 	return &GetDescriptionsPostgres{db: db}
+// 	return nil
 // }
 
 // func (gp *GetDescriptionsPostgres) GetDescriptionsDB(ctx context.Context, uid int64, sortBy, orderBy string) (descriptionsList []tech_task.Description, err error) {
@@ -72,3 +76,13 @@ package repository
 
 // 	return descriptions, nil
 // }
+
+type descriptionRepository struct {
+	db *sql.DB
+}
+
+func NewDescriptionRepository(db *sql.DB) *descriptionRepository {
+	return &descriptionRepository{
+		db: db,
+	}
+}

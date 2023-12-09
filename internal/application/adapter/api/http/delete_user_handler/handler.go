@@ -41,7 +41,7 @@ func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 		Name:    user.Name,
 		Balance: user.Balance,
-		Message: "user deleted succesfully",
+		Message: "user deleted successfully",
 	}
 
 	encoder := json.NewEncoder(w)
