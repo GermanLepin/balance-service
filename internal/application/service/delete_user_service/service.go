@@ -4,6 +4,7 @@ import (
 	"balance-service/internal/application/dto"
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/google/uuid"
 )
@@ -16,11 +17,11 @@ type UserRepository interface {
 func (s *service) DeleteUser(ctx context.Context, userID uuid.UUID) (dto.User, error) {
 	user, err := s.userRepository.FetchUserById(ctx, userID)
 	if err != nil {
-		return user, errors.New("cannot fetch a user")
+		return user, fmt.Errorf("cannot fetch a user: user id %s", userID)
 	}
 
 	if user.Balance < 0 {
-		return user, errors.New("cannot delete a user with negative balance")
+		return user, fmt.Errorf("cannot delete a user with negative balance: %x", user.Balance)
 	}
 
 	if err := s.userRepository.DeleteUserById(ctx, userID); err != nil {

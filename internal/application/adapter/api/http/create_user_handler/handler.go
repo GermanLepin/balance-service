@@ -35,8 +35,15 @@ func (h *handler) CretaeUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	cretaeUserResponse := dto.CretaeUserResponse{
+		UserID:  user.ID,
+		Name:    user.Name,
+		Balance: user.Balance,
+		Message: "user created succesfully",
+	}
+
 	encoder := json.NewEncoder(w)
-	err := encoder.Encode(&user)
+	err := encoder.Encode(&cretaeUserResponse)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return

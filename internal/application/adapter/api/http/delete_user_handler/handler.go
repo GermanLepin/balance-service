@@ -2,14 +2,13 @@ package delete_user_handler
 
 import (
 	"balance-service/internal/application/dto"
-	"fmt"
 
 	"context"
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 )
 
 type (
@@ -25,25 +24,28 @@ type (
 func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
-	vars := mux.Vars(r)
-	fmt.Println(r.URL.Scheme)
-	fmt.Println(r)
-	fmt.Println(vars["uuid"])
-
-	var user dto.User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	user, err := h.deleteUserService.DeleteUser(ctx, user.ID)
+	userID := chi.URLParam(r, "uuid")
+	userUUID, err := uuid.Parse(userID)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
+	user, err := h.deleteUserService.DeleteUser(ctx, userUUID)
+	if err != nil {
+		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	deleteUserResponse := dto.DeleteUserResponse{
+		UserID:  user.ID,
+		Name:    user.Name,
+		Balance: user.Balance,
+		Message: "user deleted succesfully",
+	}
+
 	encoder := json.NewEncoder(w)
-	err = encoder.Encode(&user)
+	err = encoder.Encode(&deleteUserResponse)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return

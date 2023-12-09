@@ -4,6 +4,7 @@ import (
 	"balance-service/internal/application/dto"
 	"context"
 	"errors"
+	"fmt"
 )
 
 type UserRepository interface {
@@ -24,7 +25,7 @@ func (s *service) CreateUser(ctx context.Context, user dto.User) error {
 
 func validateBalance(balance float64) error {
 	if balance != 0 {
-		return errors.New("incorrect balance")
+		return fmt.Errorf("incorrect balance: %x", balance)
 	}
 
 	return nil

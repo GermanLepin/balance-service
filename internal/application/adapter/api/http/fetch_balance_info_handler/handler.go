@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )
 
@@ -23,20 +24,27 @@ type (
 func (h *handler) FetchBalanceInfo(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
-	var user dto.User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	user, err := h.fetchBalanceInfoService.FetchBalanceInfo(ctx, user.ID)
+	userID := chi.URLParam(r, "uuid")
+	userUUID, err := uuid.Parse(userID)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
+	user, err := h.fetchBalanceInfoService.FetchBalanceInfo(ctx, userUUID)
+	if err != nil {
+		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
+		return
+	}
+
+	balanceInfoResponse := dto.BalanceInfoResponse{
+		UserID:  user.ID,
+		Name:    user.Name,
+		Balance: user.Balance,
+	}
+
 	encoder := json.NewEncoder(w)
-	err = encoder.Encode(&user)
+	err = encoder.Encode(&balanceInfoResponse)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
