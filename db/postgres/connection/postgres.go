@@ -2,6 +2,7 @@ package connection
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"os"
 	"time"
@@ -17,7 +18,16 @@ var (
 )
 
 func StartDB() *sql.DB {
-	conn := connectToDB()
+	dsn := fmt.Sprintf(
+		"host=%s port=%s user=%s password=%s  database=%s sslmode=disable timezone=UTC connect_timeout=5",
+		os.Getenv("PG_HOST"),
+		os.Getenv("PG_PORT"),
+		os.Getenv("PG_USER"),
+		os.Getenv("PG_PASSWORD"),
+		os.Getenv("PG_DATABASE"),
+	)
+
+	conn := connectToDB(dsn)
 	if conn == nil {
 		log.Panic("cannot connect to Postgres")
 	}
@@ -31,9 +41,7 @@ func StartDB() *sql.DB {
 	return conn
 }
 
-func connectToDB() *sql.DB {
-	dsn := os.Getenv("DSN")
-
+func connectToDB(dsn string) *sql.DB {
 	var counts int64
 
 	for {

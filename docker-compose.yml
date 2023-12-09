@@ -6,12 +6,10 @@ services:
       context: ./
       dockerfile: ./balance-service.dockerfile
     ports:
-      - "8000:80"
+      - "9000:80"
     deploy:
       mode: replicated
       replicas: 1
-    environment:
-      DSN: "host=postgres port=5432 user=postgres password=password database=users sslmode=disable timezone=UTC connect_timeout=5"
     restart: always
 
   postgres:
@@ -23,8 +21,8 @@ services:
       replicas: 1
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: secret
       POSTGRES_DB: users
     restart: always
     volumes:
-      - ./db/data/postgres/:/var/lib/postgresql/data/
+      - ./db-data/postgres/:/var/lib/postgresql/data/

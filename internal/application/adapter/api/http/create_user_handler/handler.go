@@ -2,7 +2,6 @@ package create_user_handler
 
 import (
 	"balance-service/internal/application/dto"
-	"errors"
 
 	"context"
 	"encoding/json"
@@ -30,11 +29,6 @@ func (h *handler) CretaeUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validateBalance(user.Balance); err != nil {
-		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
-		return
-	}
-
 	user.ID = uuid.New()
 	if err := h.cretaeUserService.CreateUser(ctx, user); err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
@@ -47,14 +41,6 @@ func (h *handler) CretaeUser(w http.ResponseWriter, r *http.Request) {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
-}
-
-func validateBalance(balance float64) error {
-	if balance < 0 {
-		return errors.New("balance cannot be negative")
-	}
-
-	return nil
 }
 
 func New(

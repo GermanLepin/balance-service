@@ -7,12 +7,24 @@ import (
 )
 
 type UserRepository interface {
-	CreateUser(ctx context.Context, user dto.User) error
+	CreateUserById(ctx context.Context, user dto.User) error
 }
 
 func (s *service) CreateUser(ctx context.Context, user dto.User) error {
-	if err := s.userRepository.CreateUser(ctx, user); err != nil {
+	if err := validateBalance(user.Balance); err != nil {
+		return err
+	}
+
+	if err := s.userRepository.CreateUserById(ctx, user); err != nil {
 		return errors.New("cannot create a user")
+	}
+
+	return nil
+}
+
+func validateBalance(balance float64) error {
+	if balance != 0 {
+		return errors.New("incorrect balance")
 	}
 
 	return nil

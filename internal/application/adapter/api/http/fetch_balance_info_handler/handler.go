@@ -1,20 +1,18 @@
-package delete_user_handler
+package fetch_balance_info_handler
 
 import (
 	"balance-service/internal/application/dto"
-	"fmt"
 
 	"context"
 	"encoding/json"
 	"net/http"
 
 	"github.com/google/uuid"
-	"github.com/gorilla/mux"
 )
 
 type (
-	DeleteUserService interface {
-		DeleteUser(ctx context.Context, userID uuid.UUID) (dto.User, error)
+	FetchBalanceInfoService interface {
+		FetchBalanceInfo(ctx context.Context, userID uuid.UUID) (dto.User, error)
 	}
 
 	JsonService interface {
@@ -22,13 +20,8 @@ type (
 	}
 )
 
-func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) FetchBalanceInfo(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
-
-	vars := mux.Vars(r)
-	fmt.Println(r.URL.Scheme)
-	fmt.Println(r)
-	fmt.Println(vars["uuid"])
 
 	var user dto.User
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
@@ -36,7 +29,7 @@ func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.deleteUserService.DeleteUser(ctx, user.ID)
+	user, err := h.fetchBalanceInfoService.FetchBalanceInfo(ctx, user.ID)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -51,16 +44,16 @@ func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func New(
-	deleteUserService DeleteUserService,
+	fetchBalanceInfoService FetchBalanceInfoService,
 	jsonService JsonService,
 ) *handler {
 	return &handler{
-		deleteUserService: deleteUserService,
-		jsonService:       jsonService,
+		fetchBalanceInfoService: fetchBalanceInfoService,
+		jsonService:             jsonService,
 	}
 }
 
 type handler struct {
-	deleteUserService DeleteUserService
-	jsonService       JsonService
+	fetchBalanceInfoService FetchBalanceInfoService
+	jsonService             JsonService
 }

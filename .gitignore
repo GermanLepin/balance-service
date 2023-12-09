@@ -2,4 +2,6 @@
 .DS_Store
 
 binary_file
-db/data
+/db-data
+
+.README.md
