@@ -1,15 +1,17 @@
 version: "3.8"
 
 services:
-  broker-service:
+  balance-service:
     build:
-      context: ./../
-      dockerfile: ./../tech-task-service.dockerfile
+      context: ./
+      dockerfile: ./balance.dockerfile
     ports:
-      - "8080:80"
+      - "8000:80"
     deploy:
       mode: replicated
       replicas: 1
+    environment:
+      DSN: "host=postgres port=5432 user=postgres password=password database=users sslmode=disable timezone=UTC connect_timeout=5"
     restart: always
 
   postgres:
@@ -22,7 +24,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: avito_db
+      POSTGRES_DB: users
     restart: always
     volumes:
-      - ./db-data/postgres/:/var/lib/postgresql/data/
+      - ./db/data/postgres/:/var/lib/postgresql/data/
