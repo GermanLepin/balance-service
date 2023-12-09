@@ -1,8 +1,7 @@
-package create_user_handler
+package delete_user_handler
 
 import (
 	"balance-service/internal/application/dto"
-	"errors"
 
 	"context"
 	"encoding/json"
@@ -12,8 +11,8 @@ import (
 )
 
 type (
-	CretaeUserService interface {
-		CreateUser(ctx context.Context, user dto.User) error
+	DeleteUserService interface {
+		DeleteUser(ctx context.Context, userID uuid.UUID) (dto.User, error)
 	}
 
 	JsonService interface {
@@ -21,7 +20,7 @@ type (
 	}
 )
 
-func (h *handler) CretaeUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	var user dto.User
@@ -30,44 +29,31 @@ func (h *handler) CretaeUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validateBalance(user.Balance); err != nil {
-		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
-		return
-	}
-
-	user.ID = uuid.New()
-	if err := h.cretaeUserService.CreateUser(ctx, user); err != nil {
+	user, err := h.deleteUserService.DeleteUser(ctx, user.ID)
+	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
 	encoder := json.NewEncoder(w)
-	err := encoder.Encode(&user)
+	err = encoder.Encode(&user)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 }
 
-func validateBalance(balance float64) error {
-	if balance < 0 {
-		return errors.New("balance cannot be negative")
-	}
-
-	return nil
-}
-
 func New(
-	cretaeUserService CretaeUserService,
+	deleteUserService DeleteUserService,
 	jsonService JsonService,
 ) *handler {
 	return &handler{
-		cretaeUserService: cretaeUserService,
+		deleteUserService: deleteUserService,
 		jsonService:       jsonService,
 	}
 }
 
 type handler struct {
-	cretaeUserService CretaeUserService
+	deleteUserService DeleteUserService
 	jsonService       JsonService
 }

@@ -4,7 +4,7 @@ services:
   balance-service:
     build:
       context: ./
-      dockerfile: ./balance.dockerfile
+      dockerfile: ./balance-service.dockerfile
     ports:
       - "8000:80"
     deploy:

@@ -1,9 +1,6 @@
 package routes
 
 import (
-	"balance-service/internal/application/adapter/api/http/create_user_handler"
-	"balance-service/internal/application/repository"
-	"balance-service/internal/application/service/create_user_service"
 	"database/sql"
 	"net/http"
 
@@ -12,25 +9,16 @@ import (
 )
 
 type (
-	UserService interface {
+	CreateUserHandler interface {
 		CretaeUser(w http.ResponseWriter, r *http.Request)
+	}
+
+	DeleteUserHandler interface {
 		DeleteUser(w http.ResponseWriter, r *http.Request)
-	}
-
-	BalanceService interface {
-		BalanceInfo(w http.ResponseWriter, r *http.Request)
-		BalanceReplenishment(w http.ResponseWriter, r *http.Request)
-		BalanceDebit(w http.ResponseWriter, r *http.Request)
-		UserToUser(w http.ResponseWriter, r *http.Request)
-	}
-
-	DescriptionService interface {
-		AddDescription(w http.ResponseWriter, r *http.Request)
-		GetDescriptions(w http.ResponseWriter, r *http.Request)
 	}
 )
 
-func (s *service) NewRoutes(connection *sql.DB) http.Handler {
+func (s *service) NewRoutes() http.Handler {
 	router := chi.NewRouter()
 
 	// specify who is allowed to connect
@@ -43,13 +31,9 @@ func (s *service) NewRoutes(connection *sql.DB) http.Handler {
 		MaxAge:           300,
 	}))
 
-	userRepository := repository.NewUserRepository(connection)
-	cretae_user_service := create_user_service.New(userRepository)
-	create_user_handler := create_user_handler.New(cretae_user_service)
-
 	router.Route("/user", func(r chi.Router) {
-		r.Post("/create", create_user_handler.CretaeUser)
-		//	r.Post("/delete", s.userService.DeleteUser)
+		r.Post("/create", s.createUserHandler.CretaeUser)
+		r.Delete("/delete", s.deleteUserHandler.DeleteUser)
 	})
 
 	router.Route("/balance", func(r chi.Router) {
@@ -60,7 +44,7 @@ func (s *service) NewRoutes(connection *sql.DB) http.Handler {
 	})
 
 	router.Route("/descriptions", func(r chi.Router) {
-		//r.Post("/add", s.descriptionService.AddDescription)
+		// r.Post("/add", s.descriptionService.AddDescription)
 		// r.Get("/get", s.descriptionService.GetDescriptions)
 	})
 
@@ -68,20 +52,22 @@ func (s *service) NewRoutes(connection *sql.DB) http.Handler {
 }
 
 func New(
+	connection *sql.DB,
 
-// userService UserService,
-// balanceService BalanceService,
-// descriptionService DescriptionService,
+	createUserHandler CreateUserHandler,
+	deleteUserHandler DeleteUserHandler,
 ) *service {
 	return &service{
-		// userService:        userService,
-		// balanceService:     balanceService,
-		// descriptionService: descriptionService,
+		connection: connection,
+
+		createUserHandler: createUserHandler,
+		deleteUserHandler: deleteUserHandler,
 	}
 }
 
 type service struct {
-	// userService        UserService
-	// balanceService     BalanceService
-	// descriptionService DescriptionService
+	connection *sql.DB
+
+	createUserHandler CreateUserHandler
+	deleteUserHandler DeleteUserHandler
 }

@@ -17,13 +17,24 @@ func (u *userRepository) CreateUser(ctx context.Context, user dto.User) error {
 	return nil
 }
 
-func (u *userRepository) DeleteUser(ctx context.Context, id uuid.UUID) error {
-	err := u.db.QueryRow("delete from service.users where id = $1;", id)
+func (u *userRepository) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+	err := u.db.QueryRow("delete from service.users where id = $1;", userID)
 	if err != nil {
 		return err.Err()
 	}
 
 	return nil
+}
+
+func (u *userRepository) FetchUser(ctx context.Context, userID uuid.UUID) (dto.User, error) {
+	var user dto.User
+
+	err := u.db.QueryRow("select * from service.users where id = $1;", userID).Scan(&user.ID, &user.Name, &user.Balance)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
 }
 
 type userRepository struct {
