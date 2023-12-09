@@ -2,12 +2,11 @@ package connection
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
-	"net/url"
+	"os"
 	"time"
 
-	_ "avito_tech_task/db/postgres/changelog"
+	_ "balance-service/db/postgres/changelog"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/pressly/goose"
@@ -17,8 +16,8 @@ var (
 	driver = "pgx"
 )
 
-func NewConnection(cfg *Config) *sql.DB {
-	conn := connectToDB(cfg)
+func StartDB() *sql.DB {
+	conn := connectToDB()
 	if conn == nil {
 		log.Panic("cannot connect to Postgres")
 	}
@@ -32,15 +31,8 @@ func NewConnection(cfg *Config) *sql.DB {
 	return conn
 }
 
-func connectToDB(cfg *Config) *sql.DB {
-	dsn := fmt.Sprintf("%s://%s:%s@%s:%s/%s?sslmode=disable&connect_timeout=%d",
-		"postgres",
-		url.QueryEscape(cfg.Username),
-		url.QueryEscape(cfg.Password),
-		cfg.Host,
-		cfg.Port,
-		cfg.DbName,
-		cfg.Timeout)
+func connectToDB() *sql.DB {
+	dsn := os.Getenv("DSN")
 
 	var counts int64
 
@@ -50,7 +42,7 @@ func connectToDB(cfg *Config) *sql.DB {
 			log.Println("postgres is not ready yet")
 			counts++
 		} else {
-			log.Println("connected to Postgres!")
+			log.Println("connected to Postgres")
 			return connection
 		}
 
@@ -80,13 +72,4 @@ func openDB(dsn string) (*sql.DB, error) {
 	}
 
 	return conn, nil
-}
-
-type Config struct {
-	Host     string
-	Port     string
-	Username string
-	Password string
-	DbName   string
-	Timeout  int
 }

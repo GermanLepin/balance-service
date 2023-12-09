@@ -1,6 +1,10 @@
 package routes
 
 import (
+	"balance-service/internal/application/adapter/api/http/create_user_handler"
+	"balance-service/internal/application/repository"
+	"balance-service/internal/application/service/create_user_service"
+	"database/sql"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -26,7 +30,7 @@ type (
 	}
 )
 
-func (s *service) NewRoutes() http.Handler {
+func (s *service) NewRoutes(connection *sql.DB) http.Handler {
 	router := chi.NewRouter()
 
 	// specify who is allowed to connect
@@ -39,40 +43,45 @@ func (s *service) NewRoutes() http.Handler {
 		MaxAge:           300,
 	}))
 
+	userRepository := repository.NewUserRepository(connection)
+	cretae_user_service := create_user_service.New(userRepository)
+	create_user_handler := create_user_handler.New(cretae_user_service)
+
 	router.Route("/user", func(r chi.Router) {
-		r.Post("/create", s.userService.CretaeUser)
-		r.Post("/delete", s.userService.DeleteUser)
+		r.Post("/create", create_user_handler.CretaeUser)
+		//	r.Post("/delete", s.userService.DeleteUser)
 	})
 
 	router.Route("/balance", func(r chi.Router) {
-		r.Get("/info", s.balanceService.BalanceInfo)
-		r.Post("/replenishment", s.balanceService.BalanceReplenishment)
-		r.Patch("/debit", s.balanceService.BalanceDebit)
-		r.Patch("/user-to-user", s.balanceService.UserToUser)
+		// r.Get("/info", s.balanceService.BalanceInfo)
+		// r.Post("/replenishment", s.balanceService.BalanceReplenishment)
+		// r.Patch("/debit", s.balanceService.BalanceDebit)
+		// r.Patch("/user-to-user", s.balanceService.UserToUser)
 	})
 
 	router.Route("/descriptions", func(r chi.Router) {
-		r.Post("/add", s.descriptionService.AddDescription)
-		r.Get("/get", s.descriptionService.GetDescriptions)
+		//r.Post("/add", s.descriptionService.AddDescription)
+		// r.Get("/get", s.descriptionService.GetDescriptions)
 	})
 
 	return router
 }
 
 func New(
-	userService UserService,
-	balanceService BalanceService,
-	descriptionService DescriptionService,
+
+// userService UserService,
+// balanceService BalanceService,
+// descriptionService DescriptionService,
 ) *service {
 	return &service{
-		userService:        userService,
-		balanceService:     balanceService,
-		descriptionService: descriptionService,
+		// userService:        userService,
+		// balanceService:     balanceService,
+		// descriptionService: descriptionService,
 	}
 }
 
 type service struct {
-	userService        UserService
-	balanceService     BalanceService
-	descriptionService DescriptionService
+	// userService        UserService
+	// balanceService     BalanceService
+	// descriptionService DescriptionService
 }

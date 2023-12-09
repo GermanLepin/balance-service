@@ -1,7 +1,7 @@
-AVITO_TECH_TASK_BINARY=binary_file/avitoTechTaskServiceApp
+BALANCE_SERVICE_BINARY=binary_file/balanceServiceApp
 
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
-up_build: build_tech_task
+up_build: build_balance_service
 	@echo "stopping docker images (if running...)"
 	docker-compose down
 	@echo "building (when required) and starting docker images..."
@@ -15,9 +15,9 @@ down:
 	@echo "done"
 
 ## tech_task: builds the tech task binary as a linux executable
-build_tech_task:
-	@echo "building tech task binary..."
-	cd ../ && env GOOS=linux CGO_ENABLED=0 go build -o ${AVITO_TECH_TASK_BINARY} ./cmd/service
+build_balance_service:
+	@echo "building balance service binary..."
+	env GOOS=linux CGO_ENABLED=0 go build -o ${BALANCE_SERVICE_BINARY} ./cmd/service
 	@echo "done"
 
 #Запуск интеграционных тестов

@@ -1,6 +1,9 @@
 package dto
 
+import "github.com/google/uuid"
+
 type User struct {
-	ID      int64   `json:"user_id"`
-	Balance float64 `json:"balance"`
+	ID      uuid.UUID `json:"id"`
+	Name    string    `json:"name"`
+	Balance float64   `json:"balance"`
 }
