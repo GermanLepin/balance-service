@@ -52,7 +52,7 @@ package fetch_balance_info_service
 // 			inputUser: 99999999,
 // 			mockBehavior: func(r *mock_service.MockBalanceInfo, id int64) {
 // 				var uid int64 = 0
-// 				var balance float64 = 0
+// 				var balance float32 = 0
 // 				var err = errors.New("{\"error\":\"User not found\"}\n")
 // 				r.EXPECT().BalanceInfoUser(ctx, id).Return(uid, balance, err)
 // 			},

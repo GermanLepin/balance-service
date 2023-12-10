@@ -15,7 +15,7 @@ type UserRepository interface {
 func (s *service) FetchBalanceInfo(ctx context.Context, userID uuid.UUID) (dto.User, error) {
 	user, err := s.userRepository.FetchUserById(ctx, userID)
 	if err != nil {
-		return user, fmt.Errorf("cannot fetch a user: user id %s", userID)
+		return user, fmt.Errorf("cannot fetch the user: %s", userID)
 	}
 
 	return user, nil

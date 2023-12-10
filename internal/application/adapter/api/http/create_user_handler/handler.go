@@ -39,7 +39,7 @@ func (h *handler) CretaeUser(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 		Name:    user.Name,
 		Balance: user.Balance,
-		Message: "user created successfully",
+		Message: "successful user creation",
 	}
 
 	encoder := json.NewEncoder(w)

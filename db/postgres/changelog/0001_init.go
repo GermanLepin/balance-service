@@ -19,18 +19,6 @@ func upInit(tx *sql.Tx) error {
 			name varchar(100),
 			balance numeric(10,2)
 		);
-
-		create table service.descriptions (
-			id_description serial primary key, 
-			sender_receiver varchar(100), 
-			amount numeric(10,2), 
-			description varchar(255), 
-			balance_at_moment numeric(10,2), 
-			user_id uuid, 
-			foreign key(user_id) references service.users(id), 
-			created_at timestamp not null, 
-			refill varchar(100) not null
-		);
 	`)
 	if err != nil {
 		return err

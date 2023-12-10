@@ -23,9 +23,9 @@ func (s *service) CreateUser(ctx context.Context, user dto.User) error {
 	return nil
 }
 
-func validateBalance(balance float64) error {
+func validateBalance(balance float32) error {
 	if balance != 0 {
-		return fmt.Errorf("incorrect balance: %x", balance)
+		return fmt.Errorf("incorrect balance: %f", balance)
 	}
 
 	return nil

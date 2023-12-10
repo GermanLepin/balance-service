@@ -37,7 +37,7 @@ func (h *handler) ReplenishBalance(w http.ResponseWriter, r *http.Request) {
 		UserID:  user.ID,
 		Name:    user.Name,
 		Balance: user.Balance,
-		Message: "balance replenishment successfully",
+		Message: "successful balance replenishment",
 	}
 
 	encoder := json.NewEncoder(w)

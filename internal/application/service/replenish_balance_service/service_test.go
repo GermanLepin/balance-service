@@ -15,14 +15,14 @@ package replenish_balance_service
 // )
 
 // func TestHandler_UpBalance(t *testing.T) {
-// 	type mockBehavior func(r *mock_service.MockUpBalance, id int64, amount float64)
+// 	type mockBehavior func(r *mock_service.MockUpBalance, id int64, amount float32)
 // 	ctx := context.Background()
 
 // 	tests := []struct {
 // 		name                 string
 // 		inputBody            string
 // 		inputUser            int64
-// 		inputAmount          float64
+// 		inputAmount          float32
 // 		mockBehavior         mockBehavior
 // 		expectedStatusCode   int
 // 		expectedResponseBody string
@@ -32,7 +32,7 @@ package replenish_balance_service
 // 			inputBody:   `{"user id":"1","amount":"1569.77"}`,
 // 			inputUser:   1,
 // 			inputAmount: 1569.77,
-// 			mockBehavior: func(r *mock_service.MockUpBalance, id int64, amount float64) {
+// 			mockBehavior: func(r *mock_service.MockUpBalance, id int64, amount float32) {
 // 				var err error = nil
 // 				r.EXPECT().UpBalanceUser(ctx, id, amount).Return(err)
 // 			},
@@ -44,7 +44,7 @@ package replenish_balance_service
 // 			inputBody:            `{"user id":"-1","amount":"1569.77"}`,
 // 			inputUser:            -1,
 // 			inputAmount:          1569.77,
-// 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float64) {},
+// 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float32) {},
 // 			expectedStatusCode:   400,
 // 			expectedResponseBody: "{\"error\":\"incorrect value user id\"}\n",
 // 		},
@@ -53,7 +53,7 @@ package replenish_balance_service
 // 			inputBody:            `{"user id":"1","amount":"-1569.77"}`,
 // 			inputUser:            1,
 // 			inputAmount:          -1569.77,
-// 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float64) {},
+// 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float32) {},
 // 			expectedStatusCode:   400,
 // 			expectedResponseBody: "{\"error\":\"the amount is negative\"}\n",
 // 		},
@@ -62,7 +62,7 @@ package replenish_balance_service
 // 			inputBody:            `{"user id":"1","amount":"1569.77345"}`,
 // 			inputUser:            1,
 // 			inputAmount:          1569.77345,
-// 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float64) {},
+// 			mockBehavior:         func(r *mock_service.MockUpBalance, id int64, amount float32) {},
 // 			expectedStatusCode:   400,
 // 			expectedResponseBody: "{\"error\":\"the amount have more then 2 decimal places\"}\n",
 // 		},
