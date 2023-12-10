@@ -1,5 +1,12 @@
 BALANCE_SERVICE_BINARY=binary_file/balanceServiceApp
 
+run_postgres: 
+	@echo "stopping docker images (if running...)"
+	docker-compose down
+	@echo "building (when required) and starting docker images..."
+	docker compose up postgres
+	@echo "docker images built and started"
+
 ## up_build: stops docker-compose (if running), builds all projects and starts docker compose
 up_build: build_balance_service
 	@echo "stopping docker images (if running...)"

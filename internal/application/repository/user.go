@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func (u *userRepository) CreateUser(ctx context.Context, user dto.User) error {
+func (u *userRepository) CreateUserById(ctx context.Context, user dto.User) error {
 	err := u.db.QueryRow("insert into service.users (id, name, balance) values ($1,$2,$3);", user.ID, user.Name, user.Balance)
 	if err != nil {
 		return err.Err()
@@ -17,7 +17,7 @@ func (u *userRepository) CreateUser(ctx context.Context, user dto.User) error {
 	return nil
 }
 
-func (u *userRepository) DeleteUser(ctx context.Context, userID uuid.UUID) error {
+func (u *userRepository) DeleteUserById(ctx context.Context, userID uuid.UUID) error {
 	err := u.db.QueryRow("delete from service.users where id = $1;", userID)
 	if err != nil {
 		return err.Err()
@@ -26,7 +26,7 @@ func (u *userRepository) DeleteUser(ctx context.Context, userID uuid.UUID) error
 	return nil
 }
 
-func (u *userRepository) FetchUser(ctx context.Context, userID uuid.UUID) (dto.User, error) {
+func (u *userRepository) FetchUserById(ctx context.Context, userID uuid.UUID) (dto.User, error) {
 	var user dto.User
 
 	err := u.db.QueryRow("select * from service.users where id = $1;", userID).Scan(&user.ID, &user.Name, &user.Balance)

@@ -16,6 +16,18 @@ type (
 	DeleteUserHandler interface {
 		DeleteUser(w http.ResponseWriter, r *http.Request)
 	}
+
+	FetchBalanceInfoHandler interface {
+		FetchBalanceInfo(w http.ResponseWriter, r *http.Request)
+	}
+
+	ReplenishBalanceHandler interface {
+		ReplenishBalance(w http.ResponseWriter, r *http.Request)
+	}
+
+	DepleteBalanceHandler interface {
+		DepleteBalance(w http.ResponseWriter, r *http.Request)
+	}
 )
 
 func (s *service) NewRoutes() http.Handler {
@@ -33,19 +45,14 @@ func (s *service) NewRoutes() http.Handler {
 
 	router.Route("/user", func(r chi.Router) {
 		r.Post("/create", s.createUserHandler.CretaeUser)
-		r.Delete("/delete", s.deleteUserHandler.DeleteUser)
+		r.Delete("/delete/{uuid}", s.deleteUserHandler.DeleteUser)
 	})
 
 	router.Route("/balance", func(r chi.Router) {
-		// r.Get("/info", s.balanceService.BalanceInfo)
-		// r.Post("/replenishment", s.balanceService.BalanceReplenishment)
-		// r.Patch("/debit", s.balanceService.BalanceDebit)
+		r.Get("/info/{uuid}", s.fetchBalanceInfoHandler.FetchBalanceInfo)
+		r.Post("/replenish", s.replenishBalanceHandler.ReplenishBalance)
+		r.Patch("/deplete", s.depleteBalanceHandler.DepleteBalance)
 		// r.Patch("/user-to-user", s.balanceService.UserToUser)
-	})
-
-	router.Route("/descriptions", func(r chi.Router) {
-		// r.Post("/add", s.descriptionService.AddDescription)
-		// r.Get("/get", s.descriptionService.GetDescriptions)
 	})
 
 	return router
@@ -56,18 +63,27 @@ func New(
 
 	createUserHandler CreateUserHandler,
 	deleteUserHandler DeleteUserHandler,
+	fetchBalanceInfoHandler FetchBalanceInfoHandler,
+	replenishBalanceHandler ReplenishBalanceHandler,
+	depleteBalanceHandler DepleteBalanceHandler,
 ) *service {
 	return &service{
 		connection: connection,
 
-		createUserHandler: createUserHandler,
-		deleteUserHandler: deleteUserHandler,
+		createUserHandler:       createUserHandler,
+		deleteUserHandler:       deleteUserHandler,
+		fetchBalanceInfoHandler: fetchBalanceInfoHandler,
+		replenishBalanceHandler: replenishBalanceHandler,
+		depleteBalanceHandler:   depleteBalanceHandler,
 	}
 }
 
 type service struct {
 	connection *sql.DB
 
-	createUserHandler CreateUserHandler
-	deleteUserHandler DeleteUserHandler
+	createUserHandler       CreateUserHandler
+	deleteUserHandler       DeleteUserHandler
+	fetchBalanceInfoHandler FetchBalanceInfoHandler
+	replenishBalanceHandler ReplenishBalanceHandler
+	depleteBalanceHandler   DepleteBalanceHandler
 }

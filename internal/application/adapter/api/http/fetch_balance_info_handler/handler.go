@@ -1,4 +1,4 @@
-package delete_user_handler
+package fetch_balance_info_handler
 
 import (
 	"balance-service/internal/application/dto"
@@ -7,13 +7,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi"
 	"github.com/google/uuid"
 )
 
 type (
-	DeleteUserService interface {
-		DeleteUser(ctx context.Context, userID uuid.UUID) (dto.User, error)
+	FetchBalanceInfoService interface {
+		FetchBalanceInfo(ctx context.Context, userID uuid.UUID) (dto.User, error)
 	}
 
 	JsonService interface {
@@ -21,7 +21,7 @@ type (
 	}
 )
 
-func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (h *handler) FetchBalanceInfo(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	userID := chi.URLParam(r, "uuid")
@@ -31,21 +31,20 @@ func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.deleteUserService.DeleteUser(ctx, userUUID)
+	user, err := h.fetchBalanceInfoService.FetchBalanceInfo(ctx, userUUID)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
 	}
 
-	deleteUserResponse := dto.DeleteUserResponse{
+	balanceInfoResponse := dto.BalanceInfoResponse{
 		UserID:  user.ID,
 		Name:    user.Name,
 		Balance: user.Balance,
-		Message: "successful user deletion",
 	}
 
 	encoder := json.NewEncoder(w)
-	err = encoder.Encode(&deleteUserResponse)
+	err = encoder.Encode(&balanceInfoResponse)
 	if err != nil {
 		h.jsonService.ErrorJSON(w, err, http.StatusInternalServerError)
 		return
@@ -53,16 +52,16 @@ func (h *handler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func New(
-	deleteUserService DeleteUserService,
+	fetchBalanceInfoService FetchBalanceInfoService,
 	jsonService JsonService,
 ) *handler {
 	return &handler{
-		deleteUserService: deleteUserService,
-		jsonService:       jsonService,
+		fetchBalanceInfoService: fetchBalanceInfoService,
+		jsonService:             jsonService,
 	}
 }
 
 type handler struct {
-	deleteUserService DeleteUserService
-	jsonService       JsonService
+	fetchBalanceInfoService FetchBalanceInfoService
+	jsonService             JsonService
 }

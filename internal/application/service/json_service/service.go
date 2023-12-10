@@ -8,8 +8,8 @@ import (
 )
 
 func (s *service) ErrorJSON(w http.ResponseWriter, err error, statusCode int) error {
-	var payload dto.JsonResponse
-	payload.Message = err.Error()
+	var payload dto.ErrorResponse
+	payload.Error = err.Error()
 
 	log.Printf("error: %s\n", err)
 
